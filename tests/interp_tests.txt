@@ -1,0 +1,5 @@
+interp "True" "(bool True)"
+interp "8.0" "(* (+ (int 3) (int 5)) (- (int 4) (float 3.0)))"
+interp "False" "(and (bool True) (bool False))"
+interp "True" "(or (bool True) (bool False))"
+interp "3" "(set f (function int [int int] [x y] (+ (get x) (get y))) (apply (get f) [(int 1) (int 2)]))"

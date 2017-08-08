@@ -1,0 +1,4 @@
+(float 3.0)
+(bool True)
+(* (+ (int 3) (int 5)) (- (int 4) (float 3.0)))
+(set f (function int [int int] [x y] (+ (get x) (get y))) (apply (get f) [(int 1) (int 2)]))

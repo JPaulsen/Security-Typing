@@ -1,5 +1,8 @@
 from AST import *
 
+def interp(ast):
+	return ast.accept(Interpreter(), Environment())
+
 class Interpreter:
 	def visitBoolLiteral(self, boolLiteral, env):
 		return boolLiteral.value
@@ -8,7 +11,7 @@ class Interpreter:
 		return intLiteral.value
 
 	def visitFloatLiteral(self, floatLiteral, env):
-		return floatLiteral.value
+		return 1.0 * floatLiteral.value
 
 	def visitStringLiteral(self, stringLiteral, env):
 		return stringLiteral.value
@@ -16,7 +19,7 @@ class Interpreter:
 	def visitUnaryExpression(self, unaryExpression, env):
 		if (unaryExpression.command == "not"):
 			return not unaryExpression.expression.accept(self, env)
-		raise ValueError("UnaryExpression with command "+unaryExpression.command+" not yet implementd.")
+		raise ValueError("UnaryExpression with command "+unaryExpression.command+" not yet implementd at interpreter level.")
 
 	def visitBinaryExpression(self, binaryExpression, env):
 		if (binaryExpression.command == "and"):
@@ -34,10 +37,10 @@ class Interpreter:
 		raise ValueError("BinaryExpression with command "+binaryExpression.command+" not yet implementd.") 	
 
 	def visitIfExpression(self, ifExpression, env):
-		if (ifExpression.cond.accept(self, env)):
-			return thenExpression.accept(self, env)
+		if (ifExpression.conditionExpression.accept(self, env)):
+			return ifExpression.thenExpression.accept(self, env)
 		else:
-			return elseExpression.accept(self, env)	
+			return ifExpression.elseExpression.accept(self, env)	
 
 	def visitSetExpression(self, setExpression, env):
 		newEnv = env.clone()
@@ -60,6 +63,3 @@ class Interpreter:
 		for i in range(argumentsLength):
 			newEnv.put(functionExpression.parameterSymbols[i].value(), arguments[i])
 		return functionExpression.bodyExpression.accept(self, newEnv)
-
-def interp(ast):
-	return ast.accept(Interpreter(), Environment())

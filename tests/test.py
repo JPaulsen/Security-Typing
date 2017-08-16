@@ -2,20 +2,37 @@ import sys
 sys.path.insert(0, '..')
 import shlex
 
-from Compiler import *
+from Parser import *
+from TypeChecker import *
 from Interpreter import *
 
-def safeCompile(code):
+def safeTypeCheck(code):
 	try:
 		program = loads(code, true = 'True', false = 'False')
 	except:
-		return "Format Error"
+		return "Syntax Error"
 	try:
-		return compile(program)
+		ast = parse(program)
 	except:
-		return "Runtime Error"
+		return "Parsing Error"
+	try:
+		return typeCheck(ast)
+	except:
+		return "Type Error"
 
-def safeInterp(ast):
+def safeInterp(code):
+	try:
+		program = loads(code, true = 'True', false = 'False')
+	except:
+		return "Syntax Error"
+	try:
+		ast = parse(program)
+	except:
+		return "Parsing Error"
+	try:
+		typeCheck(ast)
+	except:
+		return "Type Error"
 	try:
 		return interp(ast)
 	except:
@@ -41,10 +58,10 @@ while(True):
 	expected = code[1]
 	code = code[2]
 	test += 1
-	if (command == "compile"):
-		result = str(safeCompile(code))
+	if (command == "typeCheck"):
+		result = str(safeTypeCheck(code))
 	elif (command == "interp"):
-		result = str(safeInterp(compile(loads(code, true = 'True', false = 'False'))))
+		result = str(safeInterp(code))
 	else:
 		printBadCommand(test, command)
 		failed += 1

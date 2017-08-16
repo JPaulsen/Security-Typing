@@ -1,56 +1,58 @@
 from sexpdata import *
 
-class Expression:
-	def __init__(self, expressionType):
-		self.expressionType = expressionType
-
-	def __str__(self):
-		return str(self.expressionType)
-
-class BoolLiteral(Expression, object):
+class BoolLiteral:
 	def __init__(self, value):
-		super(self.__class__, self).__init__(bool)
 		self.value = value
 
 	def accept(self, visitor, env):
 		return visitor.visitBoolLiteral(self, env)
 
-class IntLiteral(Expression, object):
+	def __str__(self):
+		return "(bool " + str(self.value) + ")"
+
+class IntLiteral:
 	def __init__(self, value):
-		super(self.__class__, self).__init__(int)
 		self.value = value
 
 	def accept(self, visitor, env):
 		return visitor.visitIntLiteral(self, env)
 
-class FloatLiteral(Expression, object):
+	def __str__(self):
+		return "(int " + str(self.value) + ")"
+
+class FloatLiteral:
 	def __init__(self, value):
-		super(self.__class__, self).__init__(float)
 		self.value = value
 
 	def accept(self, visitor, env):
 		return visitor.visitFloatLiteral(self, env)
 
-class StringLiteral(Expression, object):
+	def __str__(self):
+		return "(float " + str(self.value) + ")"
+
+class StringLiteral:
 	def __init__(self, value):
-		super(self.__class__, self).__init__(str)
 		self.value = value
 
 	def accept(self, visitor, env):
 		return visitor.visitStringLiteral(self, env)
 
-class UnaryExpression(Expression, object):
-	def __init__(self, type, command, expression):
-		super(self.__class__, self).__init__(type)
+	def __str__(self):
+		return "(str " + str(self.value) + ")"
+
+class UnaryExpression:
+	def __init__(self, command, expression):
 		self.command = command
 		self.expression = expression
 
 	def accept(self, visitor, env):
 		return visitor.visitUnaryExpression(self, env)
 
-class BinaryExpression(Expression, object):
-	def __init__(self, type, command, firstExpression, secondExpression):
-		super(self.__class__, self).__init__(type)
+	def __str__(self):
+		return "(" + self.command + " " + str(self.expression) + ")"
+
+class BinaryExpression:
+	def __init__(self, command, firstExpression, secondExpression):
 		self.command = command
 		self.firstExpression = firstExpression
 		self.secondExpression = secondExpression
@@ -58,9 +60,11 @@ class BinaryExpression(Expression, object):
 	def accept(self, visitor, env):
 		return visitor.visitBinaryExpression(self, env)
 
-class IfExpression(Expression, object):
+	def __str__(self):
+		return "(" + self.command + " " + str(self.firstExpression) + " " + str(self.secondExpression) + ")"
+
+class IfExpression:
 	def __init__(self, conditionExpression, thenExpression, elseExpression):
-		super(self.__class__, self).__init__(thenExpression.expressionType)
 		self.conditionExpression = conditionExpression
 		self.thenExpression = thenExpression
 		self.elseExpression = elseExpression
@@ -68,9 +72,11 @@ class IfExpression(Expression, object):
 	def accept(self, visitor, env):
 		return visitor.visitIfExpression(self, env)
 
-class SetExpression(Expression, object):
+	def __str__(self):
+		return "(if " + str(self.conditionExpression) + " " + str(self.thenExpression) + " " + str(self.elseExpression) + ")"
+
+class SetExpression:
 	def __init__(self, symbol, valueExpression, thenExpression):
-		super(self.__class__, self).__init__(thenExpression.expressionType)
 		self.symbol = symbol
 		self.valueExpression = valueExpression
 		self.thenExpression = thenExpression
@@ -78,31 +84,41 @@ class SetExpression(Expression, object):
 	def accept(self, visitor, env):
 		return visitor.visitSetExpression(self, env)
 
-class GetExpression(Expression, object):
-	def __init__(self, type, symbol):
-		super(self.__class__, self).__init__(type)
+	def __str__(self):
+		return "(set " + str(self.symbol) + " " + str(self.valueExpression) + " " + str(self.thenExpression) + ")"
+
+class GetExpression:
+	def __init__(self, symbol):
 		self.symbol = symbol
 
 	def accept(self, visitor, env):
 		return visitor.visitGetExpression(self, env)
 
-class FunctionExpression(Expression, object):
+	def __str__(self):
+		return "(get " + str(self.symbol) + ")"
+
+class FunctionExpression:
 	def __init__(self, functionType, parameterSymbols, bodyExpression):
-		super(self.__class__, self).__init__(functionType)
+		self.functionType = functionType
 		self.parameterSymbols = parameterSymbols
 		self.bodyExpression = bodyExpression
 
 	def accept(self, visitor, env):
 		return visitor.visitFunctionExpression(self, env)
 
-class ApplyExpression(Expression, object):
+	def __str__(self):
+		return str(self.functionType) + " [" + ", ".join(map(str,self.parameterSymbols))+"] " + str(self.bodyExpression)
+
+class ApplyExpression:
 	def __init__(self, functionExpression, argumentExpressions):
-		super(self.__class__, self).__init__(functionExpression.expressionType.returnType)
 		self.functionExpression = functionExpression
 		self.argumentExpressions = argumentExpressions
 
 	def accept(self, visitor, env):
 		return visitor.visitApplyExpression(self, env)
+
+	def __str__(self):
+		return "(apply " + str(self.functionExpression) + " " + ", ".join(map(str,self.argumentExpressions)) + ")"
 
 class FunctionType:
 	def __init__(self, returnType, parameterTypes):

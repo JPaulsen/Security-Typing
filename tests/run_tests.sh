@@ -1,8 +1,8 @@
-echo "#Compile:";
+echo "#Type Checker:";
 echo "+--------------------+";
-python test.py < compile_tests.txt;
+python test.py < type_checker_tests.txt;
 echo "+--------------------+";
-echo "#Interp:";
+echo "#Interpreter:";
 echo "+--------------------+";
-python test.py < interp_tests.txt;
+python test.py < interpreter_tests.txt;
 echo "+--------------------+";

@@ -4,8 +4,8 @@ class BoolLiteral:
 	def __init__(self, value):
 		self.value = value
 
-	def accept(self, visitor, env):
-		return visitor.visitBoolLiteral(self, env)
+	def accept(self, visitor):
+		return visitor.visitBoolLiteral(self)
 
 	def __str__(self):
 		return "(bool " + str(self.value) + ")"
@@ -14,8 +14,8 @@ class IntLiteral:
 	def __init__(self, value):
 		self.value = value
 
-	def accept(self, visitor, env):
-		return visitor.visitIntLiteral(self, env)
+	def accept(self, visitor):
+		return visitor.visitIntLiteral(self)
 
 	def __str__(self):
 		return "(int " + str(self.value) + ")"
@@ -24,8 +24,8 @@ class FloatLiteral:
 	def __init__(self, value):
 		self.value = value
 
-	def accept(self, visitor, env):
-		return visitor.visitFloatLiteral(self, env)
+	def accept(self, visitor):
+		return visitor.visitFloatLiteral(self)
 
 	def __str__(self):
 		return "(float " + str(self.value) + ")"
@@ -34,8 +34,8 @@ class StringLiteral:
 	def __init__(self, value):
 		self.value = value
 
-	def accept(self, visitor, env):
-		return visitor.visitStringLiteral(self, env)
+	def accept(self, visitor):
+		return visitor.visitStringLiteral(self)
 
 	def __str__(self):
 		return "(str " + str(self.value) + ")"
@@ -45,8 +45,8 @@ class UnaryExpression:
 		self.command = command
 		self.expression = expression
 
-	def accept(self, visitor, env):
-		return visitor.visitUnaryExpression(self, env)
+	def accept(self, visitor):
+		return visitor.visitUnaryExpression(self)
 
 	def __str__(self):
 		return "(" + self.command + " " + str(self.expression) + ")"
@@ -57,8 +57,8 @@ class BinaryExpression:
 		self.firstExpression = firstExpression
 		self.secondExpression = secondExpression
 
-	def accept(self, visitor, env):
-		return visitor.visitBinaryExpression(self, env)
+	def accept(self, visitor):
+		return visitor.visitBinaryExpression(self)
 
 	def __str__(self):
 		return "(" + self.command + " " + str(self.firstExpression) + " " + str(self.secondExpression) + ")"
@@ -69,8 +69,8 @@ class IfExpression:
 		self.thenExpression = thenExpression
 		self.elseExpression = elseExpression
 
-	def accept(self, visitor, env):
-		return visitor.visitIfExpression(self, env)
+	def accept(self, visitor):
+		return visitor.visitIfExpression(self)
 
 	def __str__(self):
 		return "(if " + str(self.conditionExpression) + " " + str(self.thenExpression) + " " + str(self.elseExpression) + ")"
@@ -81,8 +81,8 @@ class SetExpression:
 		self.valueExpression = valueExpression
 		self.thenExpression = thenExpression
 
-	def accept(self, visitor, env):
-		return visitor.visitSetExpression(self, env)
+	def accept(self, visitor):
+		return visitor.visitSetExpression(self)
 
 	def __str__(self):
 		return "(set " + str(self.symbol) + " " + str(self.valueExpression) + " " + str(self.thenExpression) + ")"
@@ -91,8 +91,8 @@ class GetExpression:
 	def __init__(self, symbol):
 		self.symbol = symbol
 
-	def accept(self, visitor, env):
-		return visitor.visitGetExpression(self, env)
+	def accept(self, visitor):
+		return visitor.visitGetExpression(self)
 
 	def __str__(self):
 		return "(get " + str(self.symbol) + ")"
@@ -103,8 +103,8 @@ class FunctionExpression:
 		self.parameterSymbols = parameterSymbols
 		self.bodyExpression = bodyExpression
 
-	def accept(self, visitor, env):
-		return visitor.visitFunctionExpression(self, env)
+	def accept(self, visitor):
+		return visitor.visitFunctionExpression(self)
 
 	def __str__(self):
 		return str(self.functionType) + " [" + ", ".join(map(str,self.parameterSymbols))+"] " + str(self.bodyExpression)
@@ -114,8 +114,8 @@ class ApplyExpression:
 		self.functionExpression = functionExpression
 		self.argumentExpressions = argumentExpressions
 
-	def accept(self, visitor, env):
-		return visitor.visitApplyExpression(self, env)
+	def accept(self, visitor):
+		return visitor.visitApplyExpression(self)
 
 	def __str__(self):
 		return "(apply " + str(self.functionExpression) + " " + ", ".join(map(str,self.argumentExpressions)) + ")"

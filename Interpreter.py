@@ -1,65 +1,74 @@
 from AST import *
 
 def interp(ast):
-	return ast.accept(Interpreter(), Environment())
+	return ast.accept(Interpreter())
 
 class Interpreter:
-	def visitBoolLiteral(self, boolLiteral, env):
+	def __init__(self):
+		self.env = Environment()
+
+	def visitBoolLiteral(self, boolLiteral):
 		return boolLiteral.value
 
-	def visitIntLiteral(self, intLiteral, env):
+	def visitIntLiteral(self, intLiteral):
 		return intLiteral.value
 
-	def visitFloatLiteral(self, floatLiteral, env):
+	def visitFloatLiteral(self, floatLiteral):
 		return 1.0 * floatLiteral.value
 
-	def visitStringLiteral(self, stringLiteral, env):
+	def visitStringLiteral(self, stringLiteral):
 		return stringLiteral.value
 
-	def visitUnaryExpression(self, unaryExpression, env):
+	def visitUnaryExpression(self, unaryExpression):
 		if (unaryExpression.command == "not"):
-			return not unaryExpression.expression.accept(self, env)
+			return not unaryExpression.expression.accept(self)
 		raise ValueError("UnaryExpression with command "+unaryExpression.command+" not yet implementd at interpreter level.")
 
-	def visitBinaryExpression(self, binaryExpression, env):
+	def visitBinaryExpression(self, binaryExpression):
 		if (binaryExpression.command == "and"):
-			return binaryExpression.firstExpression.accept(self, env) and binaryExpression.secondExpression.accept(self, env)
+			return binaryExpression.firstExpression.accept(self) and binaryExpression.secondExpression.accept(self)
 		elif (binaryExpression.command == "or"):
-			return binaryExpression.firstExpression.accept(self, env) or binaryExpression.secondExpression.accept(self, env)
+			return binaryExpression.firstExpression.accept(self) or binaryExpression.secondExpression.accept(self)
 		elif (binaryExpression.command == "+"):
-			return binaryExpression.firstExpression.accept(self, env) + binaryExpression.secondExpression.accept(self, env)
+			return binaryExpression.firstExpression.accept(self) + binaryExpression.secondExpression.accept(self)
 		elif (binaryExpression.command == "-"):
-			return binaryExpression.firstExpression.accept(self, env) - binaryExpression.secondExpression.accept(self, env)
+			return binaryExpression.firstExpression.accept(self) - binaryExpression.secondExpression.accept(self)
 		elif (binaryExpression.command == "*"):
-			return binaryExpression.firstExpression.accept(self, env) * binaryExpression.secondExpression.accept(self, env)
+			return binaryExpression.firstExpression.accept(self) * binaryExpression.secondExpression.accept(self)
 		elif (binaryExpression.command == "/"):
-			return binaryExpression.firstExpression.accept(self, env) / binaryExpression.secondExpression.accept(self, env)
+			return binaryExpression.firstExpression.accept(self) / binaryExpression.secondExpression.accept(self)
 		raise ValueError("BinaryExpression with command "+binaryExpression.command+" not yet implementd.") 	
 
-	def visitIfExpression(self, ifExpression, env):
-		if (ifExpression.conditionExpression.accept(self, env)):
-			return ifExpression.thenExpression.accept(self, env)
+	def visitIfExpression(self, ifExpression):
+		if (ifExpression.conditionExpression.accept(self)):
+			return ifExpression.thenExpression.accept(self)
 		else:
-			return ifExpression.elseExpression.accept(self, env)	
+			return ifExpression.elseExpression.accept(self)	
 
-	def visitSetExpression(self, setExpression, env):
-		newEnv = env.clone()
-		newEnv.put(setExpression.symbol.value(), setExpression.valueExpression.accept(self, env))
-		return setExpression.thenExpression.accept(self, newEnv)
+	def visitSetExpression(self, setExpression):
+		oldEnv = self.env
+		self.env = self.env.clone()
+		self.env.put(setExpression.symbol.value(), setExpression.valueExpression.accept(self))
+		ans = setExpression.thenExpression.accept(self)
+		self.env = oldEnv
+		return ans
 
-	def visitGetExpression(self, getExpression, env):
-		return env.get(getExpression.symbol.value())
+	def visitGetExpression(self, getExpression):
+		return self.env.get(getExpression.symbol.value())
 
-	def visitFunctionExpression(self, functionExpression, env):
+	def visitFunctionExpression(self, functionExpression):
 		return functionExpression
 
-	def visitApplyExpression(self, applyExpression, env):
-		functionExpression = applyExpression.functionExpression.accept(self, env)
+	def visitApplyExpression(self, applyExpression):
+		functionExpression = applyExpression.functionExpression.accept(self)
 		arguments = []
 		for argument in applyExpression.argumentExpressions:
-			arguments.append(argument.accept(self, env))
-		newEnv = Environment()
+			arguments.append(argument.accept(self))
+		oldEnv = self.env
+		self.env = Environment()
 		argumentsLength = len(arguments)
 		for i in range(argumentsLength):
-			newEnv.put(functionExpression.parameterSymbols[i].value(), arguments[i])
-		return functionExpression.bodyExpression.accept(self, newEnv)
+			self.env.put(functionExpression.parameterSymbols[i].value(), arguments[i])
+		ans = functionExpression.bodyExpression.accept(self)
+		oldEnv = self.env
+		return ans

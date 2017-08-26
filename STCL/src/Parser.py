@@ -7,7 +7,7 @@ def _checkLengthExpected(name, expr, n):
         lastPart = ' elements.'
         if (n == 1):
             lastPart = ' element.'
-        raise ValueError(name + ' expressions must have ' + n + lastPart)
+        raise ValueError(name + ' expressions must have ' + str(n) + lastPart)
 
 
 def parse(expr):

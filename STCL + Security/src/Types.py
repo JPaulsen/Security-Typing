@@ -1,20 +1,17 @@
-from sexpdata import *
-
-
 class FunctionType:
     def __init__(self, returnType, parameterTypes):
         self.returnType = returnType
         self.parameterTypes = parameterTypes
 
     def __eq__(self, other):
-        if (other == None):
+        if other == None:
             return False
         parametersLength = len(self.parameterTypes)
         ans = self.returnType.type == other.returnType.type and parametersLength == len(other.parameterTypes)
-        if (not ans):
+        if not ans:
             return False
         for i in range(parametersLength):
-            if (self.parameterTypes[i].type != other.parameterTypes[i].type):
+            if self.parameterTypes[i].type != other.parameterTypes[i].type:
                 return False
         return True
 
@@ -33,13 +30,13 @@ def solvePairType(expr):
 
 
 def solveNativeType(expr):
-    if (expr == "str"):
+    if expr == "str":
         return str
-    elif (expr == "bool"):
+    elif expr == "bool":
         return bool
-    elif (expr == "int"):
+    elif expr == "int":
         return int
-    elif (expr == "float"):
+    elif expr == "float":
         return float
     else:
         raise ValueError(expr + 'is not a valid type.')

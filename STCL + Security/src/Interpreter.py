@@ -28,22 +28,22 @@ class Interpreter:
             "UnaryExpression with command " + unaryExpression.command + " not yet implemented at interpreter level.")
 
     def visitBinaryExpression(self, binaryExpression):
-        if (binaryExpression.command == "and"):
+        if binaryExpression.command == "and":
             return binaryExpression.firstExpression.accept(self) and binaryExpression.secondExpression.accept(self)
-        elif (binaryExpression.command == "or"):
+        elif binaryExpression.command == "or":
             return binaryExpression.firstExpression.accept(self) or binaryExpression.secondExpression.accept(self)
-        elif (binaryExpression.command == "+"):
+        elif binaryExpression.command == "+":
             return binaryExpression.firstExpression.accept(self) + binaryExpression.secondExpression.accept(self)
-        elif (binaryExpression.command == "-"):
+        elif binaryExpression.command == "-":
             return binaryExpression.firstExpression.accept(self) - binaryExpression.secondExpression.accept(self)
-        elif (binaryExpression.command == "*"):
+        elif binaryExpression.command == "*":
             return binaryExpression.firstExpression.accept(self) * binaryExpression.secondExpression.accept(self)
-        elif (binaryExpression.command == "/"):
+        elif binaryExpression.command == "/":
             return binaryExpression.firstExpression.accept(self) / binaryExpression.secondExpression.accept(self)
         raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implemented.")
 
     def visitIfExpression(self, ifExpression):
-        if (ifExpression.conditionExpression.accept(self)):
+        if ifExpression.conditionExpression.accept(self):
             return ifExpression.thenExpression.accept(self)
         else:
             return ifExpression.elseExpression.accept(self)

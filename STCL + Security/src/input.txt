@@ -15,3 +15,4 @@
 (function h (int h) [(int h) (int h)] [x y] (+ (get x) (get y)))
 (apply (function h (int h) [(int h) (int h)] [x y] (+ (get x) (get y))) [(int h 1) (int h 2)])
 (let myApply (function h (int h) [(function h (int h) [(int h) (int h)])] [f] (apply (get f) [(int h 0) (int h 1)])) (apply (get myApply) [(function h (int h) [(int h) (int h)] [x y] (+ (get x) (get y)))]))
+(apply (function h (int h) [(int l)] [x] (get x)) [(int l 3)])

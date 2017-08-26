@@ -45,7 +45,7 @@ class TypeChecker:
             _checkExpectedTypes(unaryExpression.expression.accept(self), [bool])
             return bool
         raise ValueError(
-            "UnaryExpression with command " + unaryExpression.command + " not yet implementd at typeChecker level.")
+            "UnaryExpression with command " + unaryExpression.command + " not yet implemented at typeChecker level.")
 
     def visitBinaryExpression(self, binaryExpression):
         if (binaryExpression.command == "and" or binaryExpression.command == "or"):
@@ -59,7 +59,7 @@ class TypeChecker:
             _checkExpectedTypes(firstExpressionType, [int, float])
             _checkExpectedTypes(secondExpressionType, [int, float])
             return float if firstExpressionType == float or secondExpressionType == float else int
-        raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implementd.")
+        raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implemented.")
 
     def visitIfExpression(self, ifExpression):
         _checkExpectedTypes(ifExpression.conditionExpression.accept(self), [bool])

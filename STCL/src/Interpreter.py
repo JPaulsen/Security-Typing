@@ -73,5 +73,5 @@ class Interpreter:
         for i in range(argumentsLength):
             self.env.put(functionExpression.parameterSymbols[i].value(), arguments[i])
         ans = functionExpression.bodyExpression.accept(self)
-        oldEnv = self.env
+        self.env = oldEnv
         return ans

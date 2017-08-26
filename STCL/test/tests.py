@@ -224,4 +224,9 @@ tests = [
         "code": "(set myApply (function int [(function int [int int])] [f] (apply (get f) [(int 0) (int 1)])) (apply (get myApply) [(function int [int int] [x y] (+ (get x) (get y)))]))",
         "expectedValue": "1",
     },
+    {
+        "command": "interp",
+        "code": "(set x (int 0) (set y (apply (function int [int] [x] (get x)) [(int 3)]) (get x)))",
+        "expectedValue": "0",
+    },
 ]

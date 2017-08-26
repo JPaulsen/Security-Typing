@@ -1,4 +1,5 @@
 from AST import *
+from Types import *
 
 
 def _checkExpectedTypesOfValue(value, types):
@@ -52,7 +53,7 @@ class TypeChecker:
             _checkExpectedTypes(binaryExpression.secondExpression.accept(self), [bool])
             return bool
         elif (
-                        binaryExpression.command == "+" or binaryExpression.command == "-" or binaryExpression.command == "*" or binaryExpression.command == "/"):
+                                binaryExpression.command == "+" or binaryExpression.command == "-" or binaryExpression.command == "*" or binaryExpression.command == "/"):
             firstExpressionType = binaryExpression.firstExpression.accept(self)
             secondExpressionType = binaryExpression.secondExpression.accept(self)
             _checkExpectedTypes(firstExpressionType, [int, float])

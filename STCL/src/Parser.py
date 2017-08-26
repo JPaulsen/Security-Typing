@@ -1,4 +1,5 @@
 from AST import *
+from Types import *
 
 
 def _checkLengthExpected(name, expr, n):

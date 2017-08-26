@@ -47,14 +47,14 @@ def parse(expr):
         thenExpression = parse(expr[2])
         elseExpression = parse(expr[3])
         return IfExpression(conditionExpression, thenExpression, elseExpression)
-    elif (command == "set"):
-        _checkLengthExpected("set", expr, 4)
+    elif (command == "let"):
+        _checkLengthExpected("let", expr, 4)
         symbol = expr[1]
         if (not isinstance(symbol, Symbol)):
-            raise ValueError('set first argument must be a symbol.')
+            raise ValueError('let first argument must be a symbol.')
         valueExpression = parse(expr[2])
         thenExpression = parse(expr[3])
-        return SetExpression(symbol, valueExpression, thenExpression)
+        return LetExpression(symbol, valueExpression, thenExpression)
     elif (command == "get"):
         _checkLengthExpected("get", expr, 2)
         symbol = expr[1]

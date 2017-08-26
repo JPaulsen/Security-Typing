@@ -48,11 +48,11 @@ class Interpreter:
         else:
             return ifExpression.elseExpression.accept(self)
 
-    def visitSetExpression(self, setExpression):
+    def visitLetExpression(self, letExpression):
         oldEnv = self.env
         self.env = self.env.clone()
-        self.env.put(setExpression.symbol.value(), setExpression.valueExpression.accept(self))
-        ans = setExpression.thenExpression.accept(self)
+        self.env.put(letExpression.symbol.value(), letExpression.valueExpression.accept(self))
+        ans = letExpression.thenExpression.accept(self)
         self.env = oldEnv
         return ans
 

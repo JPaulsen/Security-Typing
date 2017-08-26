@@ -84,17 +84,17 @@ class IfExpression:
             self.elseExpression) + ")"
 
 
-class SetExpression:
+class LetExpression:
     def __init__(self, symbol, valueExpression, thenExpression):
         self.symbol = symbol
         self.valueExpression = valueExpression
         self.thenExpression = thenExpression
 
     def accept(self, visitor):
-        return visitor.visitSetExpression(self)
+        return visitor.visitLetExpression(self)
 
     def __str__(self):
-        return "(set " + str(self.symbol) + " " + str(self.valueExpression) + " " + str(self.thenExpression) + ")"
+        return "(let " + str(self.symbol) + " " + str(self.valueExpression) + " " + str(self.thenExpression) + ")"
 
 
 class GetExpression:

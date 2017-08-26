@@ -4,7 +4,7 @@ from Types import *
 
 def _checkExpectedTypesOfValue(value, types):
     for type in types:
-        if (isinstance(value, type)):
+        if isinstance(value, type):
             return;
     raise ValueError(' or '.join(map(str, types)) + ' was expected.')
 
@@ -41,19 +41,18 @@ class TypeChecker:
         return str
 
     def visitUnaryExpression(self, unaryExpression):
-        if (unaryExpression.command == "not"):
+        if unaryExpression.command == "not":
             _checkExpectedTypes(unaryExpression.expression.accept(self), [bool])
             return bool
         raise ValueError(
             "UnaryExpression with command " + unaryExpression.command + " not yet implemented at typeChecker level.")
 
     def visitBinaryExpression(self, binaryExpression):
-        if (binaryExpression.command == "and" or binaryExpression.command == "or"):
+        if binaryExpression.command == "and" or binaryExpression.command == "or":
             _checkExpectedTypes(binaryExpression.firstExpression.accept(self), [bool])
             _checkExpectedTypes(binaryExpression.secondExpression.accept(self), [bool])
             return bool
-        elif (
-                                binaryExpression.command == "+" or binaryExpression.command == "-" or binaryExpression.command == "*" or binaryExpression.command == "/"):
+        elif binaryExpression.command == "+" or binaryExpression.command == "-" or binaryExpression.command == "*" or binaryExpression.command == "/":
             firstExpressionType = binaryExpression.firstExpression.accept(self)
             secondExpressionType = binaryExpression.secondExpression.accept(self)
             _checkExpectedTypes(firstExpressionType, [int, float])
@@ -86,11 +85,11 @@ class TypeChecker:
         self.env = Environment()
         for i in range(parametersLength):
             symbol = functionExpression.parameterSymbols[i]
-            if (not isinstance(symbol, Symbol)):
+            if not isinstance(symbol, Symbol):
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), functionType.parameterTypes[i])
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
-        if (functionType.returnType != bodyExpressionType):
+        if functionType.returnType != bodyExpressionType:
             raise ValueError('Body return type does not match Function return type.')
         self.env = oldEnv
         return functionType
@@ -101,7 +100,7 @@ class TypeChecker:
         for argument in applyExpression.argumentExpressions:
             argumentTypes.append(argument.accept(self))
         argumentsLength = len(argumentTypes)
-        if (len(functionType.parameterTypes) != argumentsLength):
+        if len(functionType.parameterTypes) != argumentsLength:
             raise ValueError('Function length of parameters and arguments in apply do not match.')
         for i in range(argumentsLength):
             parameterType = functionType.parameterTypes[i]

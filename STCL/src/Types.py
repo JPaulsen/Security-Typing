@@ -7,14 +7,14 @@ class FunctionType:
         self.parameterTypes = parameterTypes
 
     def __eq__(self, other):
-        if (other == None):
+        if other == None:
             return False
         parametersLength = len(self.parameterTypes)
         ans = self.returnType == other.returnType and parametersLength == len(other.parameterTypes)
-        if (not ans):
+        if not ans:
             return False
         for i in range(parametersLength):
-            if (self.parameterTypes[i] != other.parameterTypes[i]):
+            if self.parameterTypes[i] != other.parameterTypes[i]:
                 return False
         return True
 
@@ -26,15 +26,15 @@ class FunctionType:
 
 
 def solveType(expr):
-    if (isinstance(expr, Symbol)):
+    if isinstance(expr, Symbol):
         expr = expr.value()
-        if (expr == "str"):
+        if expr == "str":
             return str
-        elif (expr == "bool"):
+        elif expr == "bool":
             return bool
-        elif (expr == "int"):
+        elif expr == "int":
             return int
-        elif (expr == "float"):
+        elif expr == "float":
             return float
         else:
             raise ValueError(expr + 'is not a valid type.')

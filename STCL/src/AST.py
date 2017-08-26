@@ -140,7 +140,7 @@ class Environment:
 
     def get(self, key):
         value = self.dictionary[key]
-        if (value == None):
+        if value == None:
             raise ValueError(key + ' was not declared in this scope.')
         return value
 

@@ -25,7 +25,7 @@ class Interpreter:
         if (unaryExpression.command == "not"):
             return not unaryExpression.expression.accept(self)
         raise ValueError(
-            "UnaryExpression with command " + unaryExpression.command + " not yet implementd at interpreter level.")
+            "UnaryExpression with command " + unaryExpression.command + " not yet implemented at interpreter level.")
 
     def visitBinaryExpression(self, binaryExpression):
         if (binaryExpression.command == "and"):
@@ -40,7 +40,7 @@ class Interpreter:
             return binaryExpression.firstExpression.accept(self) * binaryExpression.secondExpression.accept(self)
         elif (binaryExpression.command == "/"):
             return binaryExpression.firstExpression.accept(self) / binaryExpression.secondExpression.accept(self)
-        raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implementd.")
+        raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implemented.")
 
     def visitIfExpression(self, ifExpression):
         if (ifExpression.conditionExpression.accept(self)):

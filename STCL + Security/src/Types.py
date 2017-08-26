@@ -94,7 +94,7 @@ class SecurityType:
             return securityType2
 
     @staticmethod
-    def joinMult(securityTypes):
+    def joinMultiple(securityTypes):
         return reduce(SecurityType.join, securityTypes, SecurityType("s"))
 
     @staticmethod
@@ -105,5 +105,5 @@ class SecurityType:
             return securityType2
 
     @staticmethod
-    def meetMult(securityTypes):
+    def meetMultiple(securityTypes):
         return reduce(SecurityType.meet, securityTypes, SecurityType("t"))

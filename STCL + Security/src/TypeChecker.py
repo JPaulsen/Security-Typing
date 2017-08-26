@@ -69,7 +69,7 @@ class TypeChecker:
         thenExpressionType = ifExpression.thenExpression.accept(self)
         elseExpressionType = ifExpression.elseExpression.accept(self)
         _checkExpectedTypes(elseExpressionType.type, [thenExpressionType.type])
-        return PairType(thenExpressionType.type, SecurityType.joinMult([condExpressionType.securityType, thenExpressionType.securityType, elseExpressionType.securityType]))
+        return PairType(thenExpressionType.type, SecurityType.joinMultiple([condExpressionType.securityType, thenExpressionType.securityType, elseExpressionType.securityType]))
 
     def visitLetExpression(self, letExpression):
         oldEnv = self.env

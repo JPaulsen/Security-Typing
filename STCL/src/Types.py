@@ -26,26 +26,31 @@ class FunctionType:
 
 
 def solveType(expr):
-    if isinstance(expr, Symbol):
-        expr = expr.value()
-        if expr == "str":
-            return str
-        elif expr == "bool":
-            return bool
-        elif expr == "int":
-            return int
-        elif expr == "float":
-            return float
-        else:
-            raise ValueError(expr + 'is not a valid type.')
+    if (expr[0].value() == "function"):
+        return solveFunctionType(expr)
+    else:
+        return solveNativeType(expr[0].value())
+
+
+def solveNativeType(expr):
+    if expr == "str":
+        return str
+    elif expr == "bool":
+        return bool
+    elif expr == "int":
+        return int
+    elif expr == "float":
+        return float
+    else:
+        raise ValueError(expr + 'is not a valid type.')
+
+
+def solveFunctionType(expr):
     try:
-        if expr[0].value() == "function":
-            returnType = solveType(expr[1])
-            parameterTypes = []
-            for parameter in expr[2].value():
-                parameterTypes.append(solveType(parameter))
-            return FunctionType(returnType, parameterTypes)
-        else:
-            raise ValueError(str(expr) + 'is not a valid type.')
+        returnType = solveType(expr[1])
+        parameterTypes = []
+        for parameter in expr[2].value():
+            parameterTypes.append(solveType(parameter))
+        return FunctionType(returnType, parameterTypes)
     except:
         raise ValueError(str(expr) + 'is not a valid type.')

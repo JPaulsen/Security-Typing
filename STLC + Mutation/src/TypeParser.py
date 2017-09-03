@@ -20,9 +20,12 @@ def parseNativeType(expr):
 
 
 def parseType(expr):
-    if (expr[0].value() == "function"):
+    if expr[0].value() == "function":
         checkLengthExpected("Function type", expr, 3)
         return _parseFunctionTypeFromTypeExpression(expr)
+    elif expr[0].value() == "ref":
+        checkLengthExpected("Ref type", expr, 2)
+        return RefType(parseType(expr[1]))
     else:
         checkLengthExpected("Native type", expr, 1)
         return parseNativeType(expr[0].value())

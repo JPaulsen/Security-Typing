@@ -244,4 +244,9 @@ tests = [
         "code": "(let x (ref (int)) (deref (x)))",
         "expectedValue": "Runtime Error",
     },
+    {
+        "command": "interp",
+        "code": "(let setToOne (function (bool) [((ref (int)) x)] (assign (x) (int 1) (bool True))) (let x (ref (int)) (assign (x) (int 0) (let y (apply (setToOne) [(x)]) (deref (x))))))",
+        "expectedValue": "1",
+    },
 ]

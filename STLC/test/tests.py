@@ -71,12 +71,12 @@ tests = [
     },
     {
         "command": "typeCheck",
-        "code": "(function (int) [(int) (int)] [x y] (+ (get x) (get y)))",
+        "code": "(function (int) [((int) x) ((int) y)] (+ (get x) (get y)))",
         "expectedValue": "function <type 'int'> [<type 'int'>, <type 'int'>]"
     },
     {
         "command": "typeCheck",
-        "code": "(apply (function (int) [(int) (int)] [x y] (+ (get x) (get y))) [(int 1) (int 2)])",
+        "code": "(apply (function (int) [((int) x) ((int) y)] (+ (get x) (get y))) [(int 1) (int 2)])",
         "expectedValue": "<type 'int'>"
     },
     {
@@ -101,7 +101,7 @@ tests = [
     },
     {
         "command": "typeCheck",
-        "code": "(function (int) [(int) (int)] [x y] (or (get x) (get y)))",
+        "code": "(function (int) [((int) x) ((int) y)] (or (get x) (get y)))",
         "expectedValue": "Type Error"
     },
     {
@@ -126,12 +126,12 @@ tests = [
     },
     {
         "command": "typeCheck",
-        "code": "(function (int) [] [] (int 3))",
+        "code": "(function (int) [] (int 3))",
         "expectedValue": "function <type 'int'> []"
     },
     {
         "command": "typeCheck",
-        "code": "(let f (function (int) [(int) (int)] [x y] (+ (get x) (get y))) (apply (get f) [(int 1) (int 2)]))",
+        "code": "(let f (function (int) [((int) x) ((int) y)] (+ (get x) (get y))) (apply (get f) [(int 1) (int 2)]))",
         "expectedValue": "<type 'int'>"
     },
     {
@@ -206,12 +206,12 @@ tests = [
     },
     {
         "command": "interp",
-        "code": "(function (int) [(int) (int)] [x y] (+ (get x) (get y)))",
+        "code": "(function (int) [((int) x) ((int) y)] (+ (get x) (get y)))",
         "expectedValue": "function <type 'int'> [<type 'int'>, <type 'int'>] [Symbol('x'), Symbol('y')] (+ (get Symbol('x')) (get Symbol('y')))",
     },
     {
         "command": "interp",
-        "code": "(apply (function (int) [(int) (int)] [x y] (+ (get x) (get y))) [(int 1) (int 2)])",
+        "code": "(apply (function (int) [((int) x) ((int) y)] (+ (get x) (get y))) [(int 1) (int 2)])",
         "expectedValue": "3",
     },
     {
@@ -221,12 +221,12 @@ tests = [
     },
     {
         "command": "interp",
-        "code": "(let myApply (function (int) [(function (int) [(int) (int)])] [f] (apply (get f) [(int 0) (int 1)])) (apply (get myApply) [(function (int) [(int) (int)] [x y] (+ (get x) (get y)))]))",
+        "code": "(let myApply (function (int) [((function (int) [(int) (int)]) f)] (apply (get f) [(int 0) (int 1)])) (apply (get myApply) [(function (int) [((int) x) ((int) y)] (+ (get x) (get y)))]))",
         "expectedValue": "1",
     },
     {
         "command": "interp",
-        "code": "(let x (int 0) (let y (apply (function (int) [(int)] [x] (get x)) [(int 3)]) (get x)))",
+        "code": "(let x (int 0) (let y (apply (function (int) [((int) x)] (get x)) [(int 3)]) (get x)))",
         "expectedValue": "0",
     },
 ]

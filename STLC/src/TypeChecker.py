@@ -1,5 +1,5 @@
 from AST import *
-from Types import *
+from sexpdata import *
 
 
 def _checkExpectedTypesOfValue(value, types):

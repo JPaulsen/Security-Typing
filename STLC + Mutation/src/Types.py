@@ -20,3 +20,19 @@ class FunctionType:
 
     def __str__(self):
         return "function " + str(self.returnType) + " [" + ", ".join(map(str, self.parameterTypes)) + "]"
+
+
+class RefType:
+    def __init__(self, referencedType):
+        self.referencedType = referencedType
+
+    def __eq__(self, other):
+        if other == None or not isinstance(other, RefType):
+            return False
+        return self.referencedType == other.referencedType
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __str__(self):
+        return "<ref " + str(self.referencedType) + ">"

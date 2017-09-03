@@ -131,6 +131,42 @@ class ApplyExpression:
         return "(apply " + str(self.functionExpression) + " " + ", ".join(map(str, self.argumentExpressions)) + ")"
 
 
+class RefExpression:
+    def __init__(self, referencedType):
+        self.referencedType = referencedType
+
+    def accept(self, visitor):
+        return visitor.visitRefExpression(self)
+
+    def __str__(self):
+        return "(ref " + str(self.referencedType) + ")"
+
+
+class DerefExpression:
+    def __init__(self, refExpression):
+        self.refExpression = refExpression
+
+    def accept(self, visitor):
+        return visitor.visitDerefExpression(self)
+
+    def __str__(self):
+        return "(deref " + str(self.refExpression) + ")"
+
+
+class AssignmentExpression:
+    def __init__(self, refExpression, valueExpression, bodyExpression):
+        self.refExpression = refExpression
+        self.valueExpression = valueExpression
+        self.bodyExpression = bodyExpression
+
+    def accept(self, visitor):
+        return visitor.visitAssignmentExpression(self)
+
+    def __str__(self):
+        return "(assign " + str(self.refExpression) + ", " + str(self.valueExpression) + ", " + str(
+            self.bodyExpression) + ")"
+
+
 class Environment:
     def __init__(self):
         self.dictionary = {}
@@ -148,3 +184,30 @@ class Environment:
         newEnv = Environment()
         newEnv.dictionary = self.dictionary.copy()
         return newEnv
+
+
+class Store:
+    def __init__(self):
+        self.dictionary = {}
+        self.size = 0
+
+    def put(self, key, value):
+        if key >= self.size:
+            raise ValueError('Memory slot not available.')
+        if not isinstance(key, int):
+            raise ValueError('Store keys must be an integer.')
+        self.dictionary[key] = value
+
+    def get(self, key):
+        if key >= self.size:
+            raise ValueError('Memory slot not available.')
+        if not isinstance(key, int):
+            raise ValueError('Store keys must be an integer.')
+        try:
+            return self.dictionary[key]
+        except:
+            raise ValueError('NullPointerException.')
+
+    def createRef(self):
+        self.size += 1
+        return self.size - 1

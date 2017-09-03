@@ -4,7 +4,7 @@ class FunctionType:
         self.parameterTypes = parameterTypes
 
     def __eq__(self, other):
-        if other == None:
+        if other == None or not isinstance(other, FunctionType):
             return False
         parametersLength = len(self.parameterTypes)
         ans = self.returnType.type == other.returnType.type and parametersLength == len(other.parameterTypes)

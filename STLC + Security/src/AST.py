@@ -143,10 +143,10 @@ class Environment:
         self.dictionary[key] = value
 
     def get(self, key):
-        value = self.dictionary[key]
-        if value == None:
+        try:
+            return self.dictionary[key]
+        except:
             raise ValueError(key + ' was not declared in this scope.')
-        return value
 
     def clone(self):
         newEnv = Environment()

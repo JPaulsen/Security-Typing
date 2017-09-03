@@ -1,6 +1,6 @@
 class BoolLiteral:
-    def __init__(self, securityType, value):
-        self.securityType = securityType
+    def __init__(self, securityLabel, value):
+        self.securityLabel = securityLabel
         self.value = value
 
     def accept(self, visitor):
@@ -11,8 +11,8 @@ class BoolLiteral:
 
 
 class IntLiteral:
-    def __init__(self, securityType, value):
-        self.securityType = securityType
+    def __init__(self, securityLabel, value):
+        self.securityLabel = securityLabel
         self.value = value
 
     def accept(self, visitor):
@@ -23,8 +23,8 @@ class IntLiteral:
 
 
 class FloatLiteral:
-    def __init__(self, securityType, value):
-        self.securityType = securityType
+    def __init__(self, securityLabel, value):
+        self.securityLabel = securityLabel
         self.value = value
 
     def accept(self, visitor):
@@ -35,8 +35,8 @@ class FloatLiteral:
 
 
 class StringLiteral:
-    def __init__(self, securityType, value):
-        self.securityType = securityType
+    def __init__(self, securityLabel, value):
+        self.securityLabel = securityLabel
         self.value = value
 
     def accept(self, visitor):
@@ -110,8 +110,8 @@ class GetExpression:
 
 
 class FunctionExpression:
-    def __init__(self, pairType, parameterSymbols, bodyExpression):
-        self.pairType = pairType
+    def __init__(self, securityType, parameterSymbols, bodyExpression):
+        self.securityType = securityType
         self.parameterSymbols = parameterSymbols
         self.bodyExpression = bodyExpression
 
@@ -119,7 +119,7 @@ class FunctionExpression:
         return visitor.visitFunctionExpression(self)
 
     def __str__(self):
-        return str(self.pairType) + " [" + ", ".join(map(str, self.parameterSymbols)) + "] " + str(
+        return str(self.securityType) + " [" + ", ".join(map(str, self.parameterSymbols)) + "] " + str(
             self.bodyExpression)
 
 

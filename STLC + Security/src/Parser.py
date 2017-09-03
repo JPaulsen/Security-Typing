@@ -20,24 +20,24 @@ def parse(expr):
     command = command.value()
     if command == 'bool':
         _checkLengthExpected("Boolean literal", expr, 3)
-        securityType = SecurityType(expr[1].value())
+        securityLabel = SecurityLabel(expr[1].value())
         value = expr[2]
-        return BoolLiteral(securityType, value)
+        return BoolLiteral(securityLabel, value)
     elif command == 'int':
         _checkLengthExpected("Integer literal", expr, 3)
-        securityType = SecurityType(expr[1].value())
+        securityLabel = SecurityLabel(expr[1].value())
         value = expr[2]
-        return IntLiteral(securityType, value)
+        return IntLiteral(securityLabel, value)
     elif command == 'float':
         _checkLengthExpected("Float literal", expr, 3)
-        securityType = SecurityType(expr[1].value())
+        securityLabel = SecurityLabel(expr[1].value())
         value = expr[2]
-        return FloatLiteral(securityType, value)
+        return FloatLiteral(securityLabel, value)
     elif command == 'str':
         _checkLengthExpected("String literal", expr, 3)
-        securityType = SecurityType(expr[1].value())
+        securityLabel = SecurityLabel(expr[1].value())
         value = expr[2]
-        return StringLiteral(securityType, value)
+        return StringLiteral(securityLabel, value)
     elif command == "not":
         _checkLengthExpected("not", expr, 2)
         expression = parse(expr[1])
@@ -69,17 +69,17 @@ def parse(expr):
         return GetExpression(symbol)
     elif command == "function":
         _checkLengthExpected("function", expr, 6)
-        pairType = solvePairType(expr)
+        securityType = solveSecurityType(expr)
         parameterSymbols = expr[4].value()
         parametersLength = len(parameterSymbols)
-        if parametersLength != len(pairType.type.parameterTypes):
+        if parametersLength != len(securityType.type.parameterTypes):
             raise ValueError('Function length of types and parameters do not match.')
         for i in range(parametersLength):
             symbol = parameterSymbols[i]
             if not isinstance(symbol, Symbol):
                 raise ValueError('Each function parameter must be a symbol.')
         bodyExpression = parse(expr[5])
-        return FunctionExpression(pairType, parameterSymbols, bodyExpression)
+        return FunctionExpression(securityType, parameterSymbols, bodyExpression)
     elif command == "apply":
         _checkLengthExpected("apply", expr, 3)
         functionExpression = parse(expr[1])

@@ -22,11 +22,11 @@ class FunctionType:
         return "function " + str(self.returnType) + " [" + ", ".join(map(str, self.parameterTypes)) + "]"
 
 
-def solvePairType(expr):
+def solveSecurityType(expr):
     if (expr[0].value() == "function"):
-        return PairType(solveFunctionType(expr), SecurityType(expr[1].value()))
+        return SecurityType(solveFunctionType(expr), SecurityLabel(expr[1].value()))
     else:
-        return PairType(solveNativeType(expr[0].value()), SecurityType(expr[1].value()))
+        return SecurityType(solveNativeType(expr[0].value()), SecurityLabel(expr[1].value()))
 
 
 def solveNativeType(expr):
@@ -44,25 +44,25 @@ def solveNativeType(expr):
 
 def solveFunctionType(expr):
     try:
-        returnType = solvePairType(expr[2])
+        returnType = solveSecurityType(expr[2])
         parameterTypes = []
         for parameter in expr[3].value():
-            parameterTypes.append(solvePairType(parameter))
+            parameterTypes.append(solveSecurityType(parameter))
         return FunctionType(returnType, parameterTypes)
     except:
         raise ValueError(str(expr) + 'is not a valid type.')
 
 
-class PairType:
-    def __init__(self, type, securityType):
+class SecurityType:
+    def __init__(self, type, securityLabel):
         self.type = type
-        self.securityType = securityType
+        self.securityLabel = securityLabel
 
     def __str__(self):
-        return "(" + str(self.type) + ", " + str(self.securityType) + ")"
+        return "(" + str(self.type) + ", " + str(self.securityLabel) + ")"
 
 
-class SecurityType:
+class SecurityLabel:
     lattice = {
         "s": 0,
         "l": 1,
@@ -72,7 +72,7 @@ class SecurityType:
 
     def __init__(self, type):
         self.type = type
-        self.value = SecurityType.lattice[type]
+        self.value = SecurityLabel.lattice[type]
 
     def __lt__(self, other):
         return self.value < other.value
@@ -84,23 +84,23 @@ class SecurityType:
         return self.type
 
     @staticmethod
-    def join(securityType1, securityType2):
-        if (securityType1 >= securityType2):
-            return securityType1
+    def join(securityLabel1, securityLabel2):
+        if (securityLabel1 >= securityLabel2):
+            return securityLabel1
         else:
-            return securityType2
+            return securityLabel2
 
     @staticmethod
-    def joinMultiple(securityTypes):
-        return reduce(SecurityType.join, securityTypes, SecurityType("s"))
+    def joinMultiple(securityLabels):
+        return reduce(SecurityLabel.join, securityLabels, SecurityLabel("s"))
 
     @staticmethod
-    def meet(securityType1, securityType2):
-        if (securityType1 <= securityType2):
-            return securityType1
+    def meet(securityLabel1, securityLabel2):
+        if (securityLabel1 <= securityLabel2):
+            return securityLabel1
         else:
-            return securityType2
+            return securityLabel2
 
     @staticmethod
-    def meetMultiple(securityTypes):
-        return reduce(SecurityType.meet, securityTypes, SecurityType("t"))
+    def meetMultiple(securityLabels):
+        return reduce(SecurityLabel.meet, securityLabels, SecurityLabel("t"))

@@ -102,7 +102,7 @@ class GetExpression:
         return visitor.visitGetExpression(self)
 
     def __str__(self):
-        return "(get " + str(self.symbol) + ")"
+        return "(" + str(self.symbol) + ")"
 
 
 class FunctionExpression:

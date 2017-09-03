@@ -49,12 +49,6 @@ def parse(expr):
         valueExpression = parse(expr[2])
         thenExpression = parse(expr[3])
         return LetExpression(symbol, valueExpression, thenExpression)
-    elif command == "get":
-        checkLengthExpected("get", expr, 2)
-        symbol = expr[1]
-        if not isinstance(symbol, Symbol):
-            raise ValueError('get argument must be a symbol.')
-        return GetExpression(symbol)
     elif command == "function":
         checkLengthExpected("function", expr, 4)
         functionType = parseFunctionTypeFromNodeExpression(expr)
@@ -78,4 +72,5 @@ def parse(expr):
             argumentExpressions.append(parse(argumentExpression))
         return ApplyExpression(functionExpression, argumentExpressions)
     else:
-        raise ValueError('command ' + command + ' not defined.')
+        checkLengthExpected("variable use", expr, 1)
+        return GetExpression(expr[0])

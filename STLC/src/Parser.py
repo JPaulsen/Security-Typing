@@ -51,10 +51,8 @@ def parse(expr):
         return LetExpression(symbol, valueExpression, thenExpression)
     elif command == "function":
         checkLengthExpected("function", expr, 4)
-        functionType = parseFunctionTypeFromNodeExpression(expr)
-        parameterSymbols = []
-        for parameter in expr[2].value():
-            parameterSymbols.append(parameter[1])
+        functionType = parseFunctionType(expr)
+        parameterSymbols = map(_getSecond, expr[2].value())
         parametersLength = len(parameterSymbols)
         if parametersLength != len(functionType.parameterTypes):
             raise ValueError('Function length of types and parameters do not match.')
@@ -74,3 +72,6 @@ def parse(expr):
     else:
         checkLengthExpected("variable use", expr, 1)
         return GetExpression(expr[0])
+
+def _getSecond(tuple):
+    return tuple[1]

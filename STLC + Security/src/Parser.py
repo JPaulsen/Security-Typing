@@ -1,5 +1,5 @@
 from AST import *
-from Types import *
+from TypeParser import *
 from sexpdata import *
 
 
@@ -61,16 +61,10 @@ def parse(expr):
         valueExpression = parse(expr[2])
         thenExpression = parse(expr[3])
         return LetExpression(symbol, valueExpression, thenExpression)
-    elif command == "get":
-        _checkLengthExpected("get", expr, 2)
-        symbol = expr[1]
-        if not isinstance(symbol, Symbol):
-            raise ValueError('get argument must be a symbol.')
-        return GetExpression(symbol)
     elif command == "function":
-        _checkLengthExpected("function", expr, 6)
-        securityType = solveSecurityType(expr)
-        parameterSymbols = expr[4].value()
+        _checkLengthExpected("function", expr, 5)
+        securityType = parseFunctionSecurityType(expr)
+        parameterSymbols = map(_getSecond, expr[3].value())
         parametersLength = len(parameterSymbols)
         if parametersLength != len(securityType.type.parameterTypes):
             raise ValueError('Function length of types and parameters do not match.')
@@ -78,7 +72,7 @@ def parse(expr):
             symbol = parameterSymbols[i]
             if not isinstance(symbol, Symbol):
                 raise ValueError('Each function parameter must be a symbol.')
-        bodyExpression = parse(expr[5])
+        bodyExpression = parse(expr[4])
         return FunctionExpression(securityType, parameterSymbols, bodyExpression)
     elif command == "apply":
         _checkLengthExpected("apply", expr, 3)
@@ -88,4 +82,9 @@ def parse(expr):
             argumentExpressions.append(parse(argumentExpression))
         return ApplyExpression(functionExpression, argumentExpressions)
     else:
-        raise ValueError('command ' + command + ' not defined.')
+        checkLengthExpected("variable use", expr, 1)
+        return GetExpression(expr[0])
+
+
+def _getSecond(tuple):
+    return tuple[1]

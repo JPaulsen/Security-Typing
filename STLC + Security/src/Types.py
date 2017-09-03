@@ -22,37 +22,6 @@ class FunctionType:
         return "function " + str(self.returnType) + " [" + ", ".join(map(str, self.parameterTypes)) + "]"
 
 
-def solveSecurityType(expr):
-    if (expr[0].value() == "function"):
-        return SecurityType(solveFunctionType(expr), SecurityLabel(expr[1].value()))
-    else:
-        return SecurityType(solveNativeType(expr[0].value()), SecurityLabel(expr[1].value()))
-
-
-def solveNativeType(expr):
-    if expr == "str":
-        return str
-    elif expr == "bool":
-        return bool
-    elif expr == "int":
-        return int
-    elif expr == "float":
-        return float
-    else:
-        raise ValueError(expr + 'is not a valid type.')
-
-
-def solveFunctionType(expr):
-    try:
-        returnType = solveSecurityType(expr[2])
-        parameterTypes = []
-        for parameter in expr[3].value():
-            parameterTypes.append(solveSecurityType(parameter))
-        return FunctionType(returnType, parameterTypes)
-    except:
-        raise ValueError(str(expr) + 'is not a valid type.')
-
-
 class SecurityType:
     def __init__(self, type, securityLabel):
         self.type = type

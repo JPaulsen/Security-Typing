@@ -15,6 +15,9 @@ class FunctionType:
                 return False
         return True
 
+    def __le__(self, other):
+        return self == other
+
     def __ne__(self, other):
         return not self.__eq__(other)
 
@@ -26,6 +29,21 @@ class SecurityType:
     def __init__(self, type, securityLabel):
         self.type = type
         self.securityLabel = securityLabel
+
+    def __eq__(self, other):
+        if other == None or not isinstance(other, SecurityType):
+            return False
+        return self.type == other.type and self.securityLabel == other.securityLabel
+
+    def __lt__(self, other):
+        if other == None or not isinstance(other, SecurityType):
+            return False
+        return self.type == other.type and self.securityLabel < other.securityLabel
+
+    def __le__(self, other):
+        if other == None or not isinstance(other, SecurityType):
+            return False
+        return self.type == other.type and self.securityLabel <= other.securityLabel
 
     def __str__(self):
         return "(" + str(self.type) + ", " + str(self.securityLabel) + ")"
@@ -43,10 +61,19 @@ class SecurityLabel:
         self.type = type
         self.value = SecurityLabel.lattice[type]
 
+    def __eq__(self, other):
+        if other == None or not isinstance(other, SecurityLabel):
+            return False
+        return self.value == other.value
+
     def __lt__(self, other):
+        if other == None or not isinstance(other, SecurityLabel):
+            return False
         return self.value < other.value
 
     def __le__(self, other):
+        if other == None or not isinstance(other, SecurityLabel):
+            return False
         return self.value <= other.value
 
     def __str__(self):
@@ -73,3 +100,19 @@ class SecurityLabel:
     @staticmethod
     def meetMultiple(securityLabels):
         return reduce(SecurityLabel.meet, securityLabels, SecurityLabel("t"))
+
+class RefType(SecurityType):
+    def __init__(self, referencedSecurityType):
+        SecurityType.__init__(self, referencedSecurityType.type, referencedSecurityType.securityLabel)
+        self.referencedSecurityType = referencedSecurityType
+
+    def __eq__(self, other):
+        if other == None or not isinstance(other, RefType):
+            return False
+        return self.referencedSecurityType == other.referencedSecurityType
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __str__(self):
+        return "<ref " + str(self.referencedSecurityType) + ">"

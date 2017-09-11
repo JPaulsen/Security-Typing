@@ -23,6 +23,9 @@ def parseSecurityType(expr):
     if (expr[0].value() == "function"):
         checkLengthExpected("Function type", expr, 4)
         return SecurityType(_parseFunctionTypeFromTypeExpression(expr), SecurityLabel(expr[1].value()))
+    elif expr[0].value() == "ref":
+        checkLengthExpected("Ref type", expr, 2)
+        return RefType(parseSecurityType(expr[1]))
     else:
         checkLengthExpected("Native type", expr, 2)
         return SecurityType(parseNativeType(expr[0].value()), SecurityLabel(expr[1].value()))

@@ -98,7 +98,10 @@ class TypeChecker:
             if not isinstance(symbol, Symbol):
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), securityType.type.parameterTypes[i])
+        oldPc = self.pc
+        self.pc = securityType.securityLabel
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
+        self.pc = oldPc
         if securityType.type.returnType.type != bodyExpressionType.type:
             raise ValueError('Body return type does not match Function return type.')
         if securityType.type.returnType.securityLabel < bodyExpressionType.securityLabel:
@@ -120,6 +123,9 @@ class TypeChecker:
             _checkExpectedTypes(argumentType.type, [parameterType.type])
             if parameterType.securityLabel < argumentType.securityLabel:
                 raise ValueError('Argument security type is higher than Function parameter security type.')
+        if (securityType.securityLabel < self.pc):
+            raise ValueError(
+                "Application of a " + str(securityType.securityLabel) + " function in a " + str(self.pc) + " context.")
         return securityType.type.returnType
 
     def visitRefExpression(self, refExpression):

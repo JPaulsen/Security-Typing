@@ -232,13 +232,34 @@ tests = [
     {
         "command": "typeCheck",
         "code": "(if (dynamic True) (int 1) (bool True))",
+        "expectedValue": "Type Error",
+    },
+    {
+        "command": "typeCheck",
+        "code": "(if (dynamic True) (dynamic 1) (bool True))",
+        "expectedValue": "<type 'dynamic'>",
+    },
+    {
+        "command": "typeCheck",
+        "code": "(if (dynamic True) (int 1) (dynamic True))",
+        "expectedValue": "<type 'dynamic'>",
+    },
+    {
+        "command": "typeCheck",
+        "code": "(if (dynamic True) (dynamic 1) (dynamic True))",
         "expectedValue": "<type 'dynamic'>",
     },
     {
         "command": "interp",
-        "code": "(if (dynamic True) (int 1) (bool True))",
+        "code": "(if (dynamic True) (dynamic 1) (bool True))",
         "expectedValue": "1",
-    }, {
+    },
+    {
+        "command": "interp",
+        "code": "(if (dynamic False) (int 1) (dynamic True))",
+        "expectedValue": "True",
+    },
+    {
         "command": "typeCheck",
         "code": "(dynamic True)",
         "expectedValue": "<type 'dynamic'>",
@@ -250,22 +271,22 @@ tests = [
     },
     {
         "command": "typeCheck",
-        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (int 1) (bool True))) (not (apply (f) [(bool False)])))",
+        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (dynamic 1) (dynamic True))) (not (apply (f) [(bool False)])))",
         "expectedValue": "<type 'bool'>",
     },
     {
         "command": "interp",
-        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (int 1) (bool True))) (not (apply (f) [(bool False)])))",
+        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (dynamic 1) (dynamic True))) (not (apply (f) [(bool False)])))",
         "expectedValue": "False",
     },
     {
         "command": "typeCheck",
-        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (int 1) (bool True))) (not (apply (f) [(bool True)])))",
+        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (dynamic 1) (dynamic True))) (not (apply (f) [(bool True)])))",
         "expectedValue": "<type 'bool'>",
     },
     {
         "command": "interp",
-        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (int 1) (bool True))) (not (apply (f) [(bool True)])))",
+        "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (dynamic 1) (dynamic True))) (not (apply (f) [(bool True)])))",
         "expectedValue": "Runtime Error",
     },
 ]

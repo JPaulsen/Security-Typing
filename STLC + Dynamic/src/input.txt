@@ -16,5 +16,5 @@
 (apply (function (int) [((int) x) ((int) y)] (+ (x) (y))) [(int 1) (int 2)])
 (let myApply (function (int) [((function (int) [(int) (int)]) f)] (apply (f) [(int 0) (int 1)])) (apply (myApply) [(function (int) [((int) x) ((int) y)] (+ (x) (y)))]))
 (dynamic True)
-(if (dynamic True) (int 1) (bool True))
-(let f (function (dynamic) [((dynamic) cond)] (if (cond) (int 1) (bool True))) (not (apply (f) [(bool False)])))
+(let f (function (dynamic) [((dynamic) cond)] (if (cond) (dynamic 1) (dynamic True))) (not (apply (f) [(bool False)])))
+(if (bool True) (dynamic 1) (bool True))

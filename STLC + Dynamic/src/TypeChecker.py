@@ -89,16 +89,16 @@ class TypeChecker:
 
     def visitIfExpression(self, ifExpression):
         conditionExpressionType = ifExpression.conditionExpression.accept(self)
-        if (isinstance(conditionExpressionType, DynamicType)):
+        if isinstance(conditionExpressionType, DynamicType):
             ifExpression.conditionExpression = CheckDynamicTypeExpression([bool], ifExpression.conditionExpression)
         else:
             _checkExpectedTypes(conditionExpressionType, [bool])
         thenExpressionType = ifExpression.thenExpression.accept(self)
         elseExpressionType = ifExpression.elseExpression.accept(self)
-        if (thenExpressionType == elseExpressionType):
-            return thenExpressionType
-        else:
+        if isinstance(thenExpressionType, DynamicType) or isinstance(elseExpressionType, DynamicType):
             return DynamicType()
+        _checkExpectedTypes(thenExpressionType, [elseExpressionType])
+        return thenExpressionType
 
     def visitLetExpression(self, letExpression):
         oldEnv = self.env

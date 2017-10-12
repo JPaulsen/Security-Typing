@@ -18,3 +18,4 @@
 (dynamic True)
 (let f (function (dynamic) [((dynamic) cond)] (if (cond) (dynamic 1) (dynamic True))) (not (apply (f) [(bool False)])))
 (if (bool True) (dynamic 1) (bool True))
+(apply (function (dynamic) [((function (dynamic) [(dynamic)]) f)] (apply (f) [(int 1)])) [(function (bool) [((int) x)] (bool True))])

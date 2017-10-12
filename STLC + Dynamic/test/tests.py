@@ -289,4 +289,24 @@ tests = [
         "code": "(let f (function (dynamic) [((dynamic) cond)] (if (cond) (dynamic 1) (dynamic True))) (not (apply (f) [(bool True)])))",
         "expectedValue": "Runtime Error",
     },
+    {
+        "command": "typeCheck",
+        "code": "(apply (function (bool) [((function (int) []) f)] (bool True)) [(function (dynamic) [] (int 1))])",
+        "expectedValue": "<type 'bool'>",
+    },
+    {
+        "command": "interp",
+        "code": "(apply (function (bool) [((function (int) []) f)] (bool True)) [(function (dynamic) [] (int 1))])",
+        "expectedValue": "True",
+    },
+{
+        "command": "typeCheck",
+        "code": "(apply (function (dynamic) [((function (dynamic) [(dynamic)]) f)] (apply (f) [(int 1)])) [(function (bool) [((bool) x)] (bool True))])",
+        "expectedValue": "<type 'dynamic'>",
+    },
+    {
+        "command": "interp",
+        "code": "(apply (function (dynamic) [((function (dynamic) [(dynamic)]) f)] (apply (f) [(int 1)])) [(function (bool) [((bool) x)] (bool True))])",
+        "expectedValue": "Runtime Error",
+    },
 ]

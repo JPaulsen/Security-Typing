@@ -1,6 +1,7 @@
 from AST import *
 from TypeChecker import checkExpectedTypesOfValue
 
+
 def interp(ast):
     return ast.accept(Interpreter())
 
@@ -74,6 +75,7 @@ class Interpreter:
         self.env = Environment()
         argumentsLength = len(arguments)
         for i in range(argumentsLength):
+            checkExpectedTypesOfValue(arguments[i], [functionExpression.functionType.parameterTypes[i]])
             self.env.put(functionExpression.parameterSymbols[i].value(), arguments[i])
         ans = functionExpression.bodyExpression.accept(self)
         self.env = oldEnv

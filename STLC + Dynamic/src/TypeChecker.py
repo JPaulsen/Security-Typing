@@ -23,9 +23,9 @@ def _isConsistentTypeOfValue(value, type):
 def _areConsistentTypes(type1, type2):
     if isinstance(type1, DynamicType) or isinstance(type2, DynamicType):
         return True
-    if isinstance(type1, FunctionType) and isinstance(type1, FunctionType):
+    if isinstance(type1, FunctionType) and isinstance(type2, FunctionType):
         return _areConsistenFunctionTypes(type1, type2)
-    if isinstance(type1, FunctionType) or isinstance(type1, FunctionType):
+    if isinstance(type1, FunctionType) or isinstance(type2, FunctionType):
         return False
     return type1 == type2
 

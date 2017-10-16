@@ -5,14 +5,48 @@ from sexpdata import *
 
 def _checkExpectedTypesOfValue(value, types):
     for type in types:
-        if isinstance(value, type):
+        if _isConsistentTypeOfValue(value, type):
             return
     raise ValueError(' or '.join(map(str, types)) + ' was expected.')
 
 
+def _isConsistentTypeOfValue(value, type):
+    if isinstance(type, FunctionType):
+        if not isinstance(value, FunctionExpression):
+            return False
+        return _areConsistentTypes(value.functionType, type)
+    if isinstance(type, SecurityType):
+        return False
+    return isinstance(value, type)
+
+
+def _areConsistentTypes(type1, type2):
+    if isinstance(type1, FunctionType) and isinstance(type2, FunctionType):
+        return _areConsistenFunctionTypes(type1, type2)
+    if isinstance(type1, SecurityType) and isinstance(type2, SecurityType):
+        return _areConsistentTypes(type1.type, type2.type)
+    if isinstance(type1, FunctionType) or isinstance(type2, FunctionType) or isinstance(type1,
+                                                                                        SecurityType) or isinstance(
+            type2, SecurityType):
+        return False
+    return type1 == type2
+
+
+def _areConsistenFunctionTypes(functionType1, functionType2):
+    parameterLength1 = len(functionType1.parameterTypes)
+    parameterLength2 = len(functionType2.parameterTypes)
+    if parameterLength1 != parameterLength2 or not _areConsistentTypes(functionType1.returnType,
+                                                                       functionType2.returnType):
+        return False
+    for i in range(parameterLength1):
+        if not _areConsistentTypes(functionType1.parameterTypes[i], functionType2.parameterTypes[i]):
+            return False
+    return True
+
+
 def _checkExpectedTypes(type, types):
     for t in types:
-        if type == t:
+        if _areConsistentTypes(t, type):
             return
     raise ValueError(' or '.join(map(str, types)) + ' was expected.')
 
@@ -98,7 +132,7 @@ class TypeChecker:
         if securityType.type.returnType.type != bodyExpressionType.type:
             raise ValueError('Body return type does not match Function return type.')
         if securityType.type.returnType.securityLabel < bodyExpressionType.securityLabel:
-            raise ValueError('Body return security type is higher than Function return security type.')
+            raise ValueError('Body return security label is higher than Function return security label.')
         self.env = oldEnv
         return securityType
 
@@ -115,5 +149,5 @@ class TypeChecker:
             argumentType = argumentTypes[i]
             _checkExpectedTypes(argumentType.type, [parameterType.type])
             if parameterType.securityLabel < argumentType.securityLabel:
-                raise ValueError('Argument security type is higher than Function parameter security type.')
+                raise ValueError('Argument security label is higher than Function parameter security label.')
         return securityType.type.returnType

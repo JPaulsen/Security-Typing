@@ -15,3 +15,4 @@
 (function (int) [((int) x) ((int) y)] (+ (x) (y)))
 (apply (function (int) [((int) x) ((int) y)] (+ (x) (y))) [(int 1) (int 2)])
 (let myApply (function (int) [((function (int) [(int) (int)]) f)] (apply (f) [(int 0) (int 1)])) (apply (myApply) [(function (int) [((int) x) ((int) y)] (+ (x) (y)))]))
+(apply (function (bool) [((function (bool) [(bool)]) f)] (apply (f) [(bool True)])) [(function (bool) [((bool) x)] (x))])

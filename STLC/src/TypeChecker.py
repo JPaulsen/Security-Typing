@@ -5,14 +5,14 @@ from sexpdata import *
 def _checkExpectedTypesOfValue(value, types):
     for type in types:
         if isinstance(value, type):
-            return;
+            return
     raise ValueError(' or '.join(map(str, types)) + ' was expected.')
 
 
 def _checkExpectedTypes(type, types):
     for t in types:
         if type == t:
-            return;
+            return
     raise ValueError(' or '.join(map(str, types)) + ' was expected.')
 
 

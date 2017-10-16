@@ -45,8 +45,7 @@ class SecurityLabel:
     def join(securityLabel1, securityLabel2):
         if (securityLabel1 >= securityLabel2):
             return securityLabel1
-        else:
-            return securityLabel2
+        return securityLabel2
 
     @staticmethod
     def joinMultiple(securityLabels):
@@ -56,8 +55,7 @@ class SecurityLabel:
     def meet(securityLabel1, securityLabel2):
         if (securityLabel1 <= securityLabel2):
             return securityLabel1
-        else:
-            return securityLabel2
+        return securityLabel2
 
     @staticmethod
     def meetMultiple(securityLabels):
@@ -68,14 +66,6 @@ class RefType(SecurityType):
     def __init__(self, referencedSecurityType):
         SecurityType.__init__(self, referencedSecurityType.type, referencedSecurityType.securityLabel)
         self.referencedSecurityType = referencedSecurityType
-
-    def __eq__(self, other):
-        if other == None or not isinstance(other, RefType):
-            return False
-        return self.referencedSecurityType == other.referencedSecurityType
-
-    def __ne__(self, other):
-        return not self.__eq__(other)
 
     def __str__(self):
         return "<ref " + str(self.referencedSecurityType) + ">"

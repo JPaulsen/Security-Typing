@@ -22,6 +22,7 @@ class SecurityLabel:
         "l": 1,
         "h": 2,
         "t": 3,
+        "?": -1,
     }
 
     def __init__(self, type):
@@ -29,16 +30,23 @@ class SecurityLabel:
         self.value = SecurityLabel.lattice[type]
 
     def __lt__(self, other):
-        return self.value < other.value
+        return self.isDynamicLabel() or other.isDynamicLabel() or self.value < other.value
 
     def __le__(self, other):
-        return self.value <= other.value
+        return other.isDynamicLabel() or self.value <= other.value
 
     def __str__(self):
         return self.type
 
+    def isDynamicLabel(self):
+        return self.value == -1
+
     @staticmethod
     def join(securityLabel1, securityLabel2):
+        if securityLabel1.isDynamicLabel():
+            return securityLabel1
+        if securityLabel2.isDynamicLabel():
+            return securityLabel2
         if (securityLabel1 >= securityLabel2):
             return securityLabel1
         return securityLabel2
@@ -49,6 +57,10 @@ class SecurityLabel:
 
     @staticmethod
     def meet(securityLabel1, securityLabel2):
+        if securityLabel1.isDynamicLabel():
+            return securityLabel1
+        if securityLabel2.isDynamicLabel():
+            return securityLabel2
         if (securityLabel1 <= securityLabel2):
             return securityLabel1
         return securityLabel2

@@ -4,7 +4,7 @@ class FunctionType:
         self.parameterTypes = parameterTypes
 
     def __str__(self):
-        return "function " + str(self.returnType) + " [" + ", ".join(map(str, self.parameterTypes)) + "]"
+        return 'function ' + str(self.returnType) + ' [' + ', '.join(map(str, self.parameterTypes)) + ']'
 
 
 class SecurityType:
@@ -13,16 +13,16 @@ class SecurityType:
         self.securityLabel = securityLabel
 
     def __str__(self):
-        return "(" + str(self.type) + ", " + str(self.securityLabel) + ")"
+        return '(' + str(self.type) + ', ' + str(self.securityLabel) + ')'
 
 
 class SecurityLabel:
     lattice = {
-        "b": 0,
-        "l": 1,
-        "h": 2,
-        "t": 3,
-        "?": -1,
+        'b': 0,
+        'l': 1,
+        'h': 2,
+        't': 3,
+        '?': -1,
     }
 
     def __init__(self, type):
@@ -39,7 +39,7 @@ class SecurityLabel:
         return self.type
 
     def isDynamicLabel(self):
-        return self.value == -1
+        return self.value == SecurityLabel.lattice['?']
 
     @staticmethod
     def join(securityLabel1, securityLabel2):
@@ -53,7 +53,7 @@ class SecurityLabel:
 
     @staticmethod
     def joinMultiple(securityLabels):
-        return reduce(SecurityLabel.join, securityLabels, SecurityLabel("b"))
+        return reduce(SecurityLabel.join, securityLabels, SecurityLabel('b'))
 
     @staticmethod
     def meet(securityLabel1, securityLabel2):
@@ -67,4 +67,4 @@ class SecurityLabel:
 
     @staticmethod
     def meetMultiple(securityLabels):
-        return reduce(SecurityLabel.meet, securityLabels, SecurityLabel("t"))
+        return reduce(SecurityLabel.meet, securityLabels, SecurityLabel('t'))

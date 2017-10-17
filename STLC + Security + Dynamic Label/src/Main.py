@@ -12,7 +12,8 @@ for code in codeSource:
     program = loads(code, true='True', false='False')
     print "Program:", program
     ast = parse(program)
-    print "AST:", ast
+    print "AST before typeCheck:", ast
     print "Type:", typeCheck(ast)
+    print "AST after typeCheck:", ast
     print "Result:", interp(ast)
     print "+--------------------+"

@@ -134,6 +134,17 @@ class ApplyExpression:
     def __str__(self):
         return "(apply " + str(self.functionExpression) + " " + ", ".join(map(str, self.argumentExpressions)) + ")"
 
+class CheckDynamicTypeExpression:
+    def __init__(self, types, expression):
+        self.types = types
+        self.expression = expression
+
+    def accept(self, visitor):
+        return visitor.visitCheckDynamicTypeExpression(self)
+
+    def __str__(self):
+        return "(check [" + ", ".join(map(str, self.types)) + "] " + str(self.expression) + ")"
+
 
 class Environment:
     def __init__(self):

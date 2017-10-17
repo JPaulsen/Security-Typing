@@ -154,13 +154,10 @@ class TypeChecker:
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), functionType.parameterTypes[i])
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
-        if not isinstance(functionType.returnType, DynamicType):
-            if isinstance(bodyExpressionType, DynamicType):
-                functionExpression.bodyExpression = CheckDynamicTypeExpression([functionType.returnType],
-                                                                               functionExpression.bodyExpression)
-            else:
-                _checkExpectedTypes(bodyExpressionType, [functionType.returnType])
-
+        _checkExpectedTypes(bodyExpressionType, [functionType.returnType])
+        if not isinstance(functionType.returnType, DynamicType) and isinstance(bodyExpressionType, DynamicType):
+            functionExpression.bodyExpression = CheckDynamicTypeExpression([functionType.returnType],
+                                                                           functionExpression.bodyExpression)
         self.env = oldEnv
         return functionType
 
@@ -175,13 +172,7 @@ class TypeChecker:
         for i in range(argumentsLength):
             parameterType = functionType.parameterTypes[i]
             argumentType = argumentTypes[i]
-            if not isinstance(parameterType, DynamicType):
-                if isinstance(argumentType, DynamicType):
-                    applyExpression.argumentExpressions[i] = CheckDynamicTypeExpression([parameterType],
-                                                                                        applyExpression.argumentExpressions[
-                                                                                            i])
-                else:
-                    _checkExpectedTypes(argumentType, [parameterType])
+            _checkExpectedTypes(argumentType, [parameterType])
         return functionType.returnType
 
     def visitCheckDynamicTypeExpression(self, checkDynamicTypeExpression):

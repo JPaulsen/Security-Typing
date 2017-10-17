@@ -130,6 +130,9 @@ class TypeChecker:
             self.env.put(functionExpression.parameterSymbols[i].value(), securityType.type.parameterTypes[i])
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
         _checkExpectedTypes(bodyExpressionType, [securityType.type.returnType])
+        if not securityType.type.returnType.securityLabel.isDynamicLabel() and bodyExpressionType.securityLabel.isDynamicLabel():
+            functionExpression.bodyExpression = CheckDynamicTypeExpression([securityType.type.returnType],
+                                                                           functionExpression.bodyExpression)
         self.env = oldEnv
         return securityType
 

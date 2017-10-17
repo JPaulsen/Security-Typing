@@ -129,9 +129,7 @@ class TypeChecker:
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), securityType.type.parameterTypes[i])
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
-        _checkExpectedTypes(bodyExpressionType.type, [securityType.type.returnType.type])
-        if securityType.type.returnType.securityLabel < bodyExpressionType.securityLabel:
-            raise ValueError('Body return security label is higher than Function return security label.')
+        _checkExpectedTypes(bodyExpressionType, [securityType.type.returnType])
         self.env = oldEnv
         return securityType
 

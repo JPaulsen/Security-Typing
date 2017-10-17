@@ -18,3 +18,4 @@
 (apply (function h (int h) [((int l) x)] (x)) [(int l 3)])
 (let x (ref (int h)) (x))
 (let x (ref (int h)) (assign (x) (int h 0) (x)))
+(function l (function l (int l) [(int l)]) [] (function l (int l) [((int l) x)] (+ (x) (int l 1))))

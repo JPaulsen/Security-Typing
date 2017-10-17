@@ -16,3 +16,4 @@
 (apply (function h (int h) [((int h) x) ((int h) y)] (+ (x) (y))) [(int h 1) (int h 2)])
 (let myApply (function h (int h) [((function h (int h) [(int h) (int h)]) f)] (apply (f) [(int h 0) (int h 1)])) (apply (myApply) [(function h (int h) [((int h) x) ((int h) y)] (+ (x) (y)))]))
 (apply (function h (int h) [((int l) x)] (x)) [(int l 3)])
+(function l (function l (int l) [(int l)]) [] (function l (int l) [((int l) x)] (+ (x) (int l 1))))

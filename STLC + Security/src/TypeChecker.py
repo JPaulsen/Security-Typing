@@ -27,7 +27,7 @@ def _areConsistentTypes(type1, type2):
         return _areConsistentTypes(type1.type, type2.type)
     if isinstance(type1, FunctionType) or isinstance(type2, FunctionType) or isinstance(type1,
                                                                                         SecurityType) or isinstance(
-            type2, SecurityType):
+        type2, SecurityType):
         return False
     return type1 == type2
 
@@ -129,8 +129,7 @@ class TypeChecker:
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), securityType.type.parameterTypes[i])
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
-        if securityType.type.returnType.type != bodyExpressionType.type:
-            raise ValueError('Body return type does not match Function return type.')
+        _checkExpectedTypes(bodyExpressionType.type, [securityType.type.returnType.type])
         if securityType.type.returnType.securityLabel < bodyExpressionType.securityLabel:
             raise ValueError('Body return security label is higher than Function return security label.')
         self.env = oldEnv

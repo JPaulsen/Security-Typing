@@ -141,8 +141,7 @@ class TypeChecker:
         self.pc = securityType.securityLabel
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
         self.pc = oldPc
-        if securityType.type.returnType.type != bodyExpressionType.type:
-            raise ValueError('Body return type does not match Function return type.')
+        _checkExpectedTypes(bodyExpressionType.type, [securityType.type.returnType.type])
         if securityType.type.returnType.securityLabel < bodyExpressionType.securityLabel:
             raise ValueError('Body return security type is higher than Function return security type.')
         self.env = oldEnv

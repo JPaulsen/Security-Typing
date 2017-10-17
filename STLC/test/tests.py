@@ -236,7 +236,7 @@ tests = [
     },
     {
         "command": "typeCheck",
-        "code": "(function (function (int) [(int)]) [] (function (bool) [((int) x)] (+ (x) (int 1))))",
+        "code": "(function (function (bool) [(int)]) [] (function (int) [((int) x)] (+ (x) (int 1))))",
         "expectedValue": "Type Error",
     },
 ]

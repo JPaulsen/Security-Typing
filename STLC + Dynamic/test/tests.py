@@ -299,7 +299,7 @@ tests = [
         "code": "(apply (function (bool) [((function (int) []) f)] (bool True)) [(function (dynamic) [] (int 1))])",
         "expectedValue": "True",
     },
-{
+    {
         "command": "typeCheck",
         "code": "(apply (function (dynamic) [((function (dynamic) [(dynamic)]) f)] (apply (f) [(int 1)])) [(function (bool) [((bool) x)] (bool True))])",
         "expectedValue": "<type 'dynamic'>",
@@ -308,5 +308,15 @@ tests = [
         "command": "interp",
         "code": "(apply (function (dynamic) [((function (dynamic) [(dynamic)]) f)] (apply (f) [(int 1)])) [(function (bool) [((bool) x)] (bool True))])",
         "expectedValue": "Runtime Error",
+    },
+    {
+        "command": "interp",
+        "code": "(function (function (int) [(int)]) [] (function (int) [((int) x)] (+ (x) (int 1))))",
+        "expectedValue": "function function <type 'int'> [<type 'int'>] [] [] function <type 'int'> [<type 'int'>] [Symbol('x')] (+ (Symbol('x')) (int 1))",
+    },
+    {
+        "command": "typeCheck",
+        "code": "(function (function (int) [(int)]) [] (function (bool) [((int) x)] (+ (x) (int 1))))",
+        "expectedValue": "Type Error",
     },
 ]

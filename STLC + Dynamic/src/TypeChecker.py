@@ -158,8 +158,8 @@ class TypeChecker:
             if isinstance(bodyExpressionType, DynamicType):
                 functionExpression.bodyExpression = CheckDynamicTypeExpression([functionType.returnType],
                                                                                functionExpression.bodyExpression)
-            elif functionType.returnType != bodyExpressionType:
-                raise ValueError('Body return type does not match Function return type.')
+            else:
+                _checkExpectedTypes(bodyExpressionType, [functionType.returnType])
 
         self.env = oldEnv
         return functionType

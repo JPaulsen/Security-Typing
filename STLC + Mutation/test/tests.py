@@ -249,4 +249,14 @@ tests = [
         "code": "(let setToOne (function (bool) [((ref (int)) x)] (assign (x) (int 1) (bool True))) (let x (ref (int)) (assign (x) (int 0) (let y (apply (setToOne) [(x)]) (deref (x))))))",
         "expectedValue": "1",
     },
+    {
+        "command": "interp",
+        "code": "(function (function (int) [(int)]) [] (function (int) [((int) x)] (+ (x) (int 1))))",
+        "expectedValue": "function function <type 'int'> [<type 'int'>] [] [] function <type 'int'> [<type 'int'>] [Symbol('x')] (+ (Symbol('x')) (int 1))",
+    },
+    {
+        "command": "typeCheck",
+        "code": "(function (function (int) [(int)]) [] (function (bool) [((int) x)] (+ (x) (int 1))))",
+        "expectedValue": "Type Error",
+    },
 ]

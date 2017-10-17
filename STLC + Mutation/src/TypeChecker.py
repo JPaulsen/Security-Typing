@@ -125,8 +125,7 @@ class TypeChecker:
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), functionType.parameterTypes[i])
         bodyExpressionType = functionExpression.bodyExpression.accept(self)
-        if functionType.returnType != bodyExpressionType:
-            raise ValueError('Body return type does not match Function return type.')
+        _checkExpectedTypes(bodyExpressionType, [functionType.returnType])
         self.env = oldEnv
         return functionType
 

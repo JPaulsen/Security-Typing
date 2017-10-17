@@ -16,3 +16,4 @@
 (apply (function (int) [((int) x) ((int) y)] (+ (x) (y))) [(int 1) (int 2)])
 (let myApply (function (int) [((function (int) [(int) (int)]) f)] (apply (f) [(int 0) (int 1)])) (apply (myApply) [(function (int) [((int) x) ((int) y)] (+ (x) (y)))]))
 (let setToOne (function (bool) [((ref (int)) x)] (assign (x) (int 1) (bool True))) (let x (ref (int)) (assign (x) (int 0) (let y (apply (setToOne) [(x)]) (deref (x))))))
+(function (function (int) [(int)]) [] (function (int) [((int) x)] (+ (x) (int 1))))

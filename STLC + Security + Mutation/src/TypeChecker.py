@@ -30,7 +30,7 @@ def _areConsistentTypes(type1, type2):
     if isinstance(type1, RefType) and isinstance(type2, RefType):
         return _areConsistentTypes(type1.referencedType, type2.referencedType)
     if isinstance(type1, SecurityType) and isinstance(type2, SecurityType):
-        return _areConsistentTypes(type1.type, type2.type)
+        return type1.securityLabel <= type2.securityLabel and _areConsistentTypes(type1.type, type2.type)
     if isinstance(type1, FunctionType) or isinstance(type2, FunctionType) or isinstance(type1, RefType) or isinstance(
             type2, RefType) or isinstance(type1, SecurityType) or isinstance(type2, SecurityType):
         return False
@@ -40,8 +40,8 @@ def _areConsistentTypes(type1, type2):
 def _areConsistenFunctionTypes(functionType1, functionType2):
     parameterLength1 = len(functionType1.parameterTypes)
     parameterLength2 = len(functionType2.parameterTypes)
-    if parameterLength1 != parameterLength2 or not _areConsistentTypes(functionType1.returnType,
-                                                                       functionType2.returnType):
+    if parameterLength1 != parameterLength2 or not _areConsistentTypes(functionType2.returnType,
+                                                                       functionType1.returnType):
         return False
     for i in range(parameterLength1):
         if not _areConsistentTypes(functionType1.parameterTypes[i], functionType2.parameterTypes[i]):
@@ -51,7 +51,7 @@ def _areConsistenFunctionTypes(functionType1, functionType2):
 
 def _checkExpectedTypes(type, types):
     for t in types:
-        if _areConsistentTypes(t, type):
+        if _areConsistentTypes(type, t):
             return
     raise ValueError(' or '.join(map(str, types)) + ' was expected.')
 
@@ -158,9 +158,7 @@ class TypeChecker:
         for i in range(argumentsLength):
             parameterType = securityType.type.parameterTypes[i]
             argumentType = argumentTypes[i]
-            _checkExpectedTypes(argumentType.type, [parameterType.type])
-            if parameterType.securityLabel < argumentType.securityLabel:
-                raise ValueError('Argument security type is higher than Function parameter security type.')
+            _checkExpectedTypes(argumentType, [parameterType])
         if (securityType.securityLabel < self.pc):
             raise ValueError(
                 "Application of a " + str(securityType.securityLabel) + " function in a " + str(self.pc) + " context.")

@@ -47,7 +47,7 @@ def _areConsistenFunctionTypes(functionType1, functionType2):
 
 def _checkExpectedTypes(type, types):
     for t in types:
-        if _areConsistentTypes(t, type):
+        if _areConsistentTypes(type, t):
             return
     raise ValueError(' or '.join(map(str, types)) + ' was expected.')
 

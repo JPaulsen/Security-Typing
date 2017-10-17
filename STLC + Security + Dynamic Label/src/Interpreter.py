@@ -1,4 +1,6 @@
+from TypeChecker import checkExpectedTypesOfValue
 from AST import *
+from Types import *
 
 
 def interp(ast):
@@ -10,28 +12,28 @@ class Interpreter:
         self.env = Environment()
 
     def visitBoolLiteral(self, boolLiteral):
-        return boolLiteral.value
+        return SecurityValue(boolLiteral.value, boolLiteral.securityLabel)
 
     def visitIntLiteral(self, intLiteral):
-        return intLiteral.value
+        return SecurityValue(intLiteral.value, intLiteral.securityLabel)
 
     def visitFloatLiteral(self, floatLiteral):
-        return 1.0 * floatLiteral.value
+        return SecurityValue(1.0 * floatLiteral.value, floatLiteral.securityLabel)
 
     def visitStringLiteral(self, stringLiteral):
-        return stringLiteral.value
+        return SecurityValue(stringLiteral.value, stringLiteral.securityLabel)
 
     def visitUnaryExpression(self, unaryExpression):
         if (unaryExpression.command == "not"):
-            return not unaryExpression.expression.accept(self)
+            return unaryExpression.expression.accept(self).boolNot()
         raise ValueError(
             "UnaryExpression with command " + unaryExpression.command + " not yet implemented at interpreter level.")
 
     def visitBinaryExpression(self, binaryExpression):
         if binaryExpression.command == "and":
-            return binaryExpression.firstExpression.accept(self) and binaryExpression.secondExpression.accept(self)
+            return binaryExpression.firstExpression.accept(self).boolAnd(binaryExpression.secondExpression.accept(self))
         elif binaryExpression.command == "or":
-            return binaryExpression.firstExpression.accept(self) or binaryExpression.secondExpression.accept(self)
+            return binaryExpression.firstExpression.accept(self).boolOr(binaryExpression.secondExpression.accept(self))
         elif binaryExpression.command == "+":
             return binaryExpression.firstExpression.accept(self) + binaryExpression.secondExpression.accept(self)
         elif binaryExpression.command == "-":
@@ -60,10 +62,10 @@ class Interpreter:
         return self.env.get(getExpression.symbol.value())
 
     def visitFunctionExpression(self, functionExpression):
-        return functionExpression
+        return SecurityValue(functionExpression, functionExpression.securityType.securityLabel)
 
     def visitApplyExpression(self, applyExpression):
-        functionExpression = applyExpression.functionExpression.accept(self)
+        functionExpression = applyExpression.functionExpression.accept(self).value
         arguments = []
         for argument in applyExpression.argumentExpressions:
             arguments.append(argument.accept(self))
@@ -71,6 +73,7 @@ class Interpreter:
         self.env = Environment()
         argumentsLength = len(arguments)
         for i in range(argumentsLength):
+            checkExpectedTypesOfValue(arguments[i], [functionExpression.securityType.type.parameterTypes[i]])
             self.env.put(functionExpression.parameterSymbols[i].value(), arguments[i])
         ans = functionExpression.bodyExpression.accept(self)
         self.env = oldEnv

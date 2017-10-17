@@ -14,11 +14,11 @@ def _isConsistentTypeOfValue(value, type):
     if isinstance(type, FunctionType):
         if not isinstance(value, FunctionExpression):
             return False
-        return _areConsistentTypes(value.functionType, type)
+        return _areConsistentTypes(value.securityType.type, type)
     if isinstance(type, RefType):
         if not isinstance(value, RefExpression):
             return False
-        return _areConsistentTypes(value.referencedType, type.referencedType)
+        return _areConsistentTypes(value.referencedSecurityType, type.referencedSecurityType)
     if isinstance(type, SecurityType):
         return False
     return isinstance(value, type)

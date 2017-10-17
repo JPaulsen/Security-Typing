@@ -3,7 +3,7 @@ from Types import *
 from sexpdata import *
 
 
-def _checkExpectedTypesOfValue(value, types):
+def checkExpectedTypesOfValue(value, types):
     for type in types:
         if _isConsistentTypeOfValue(value, type):
             return
@@ -14,9 +14,11 @@ def _isConsistentTypeOfValue(value, type):
     if isinstance(type, FunctionType):
         if not isinstance(value, FunctionExpression):
             return False
-        return _areConsistentTypes(value.functionType, type)
+        return _areConsistentTypes(value.securityType.type, type)
     if isinstance(type, SecurityType):
-        return False
+        if not isinstance(value, SecurityValue):
+            return False
+        return value.securityLabel <= type.securityLabel and _isConsistentTypeOfValue(value.value, type.type)
     return isinstance(value, type)
 
 
@@ -60,19 +62,19 @@ class TypeChecker:
         self.env = Environment()
 
     def visitBoolLiteral(self, boolLiteral):
-        _checkExpectedTypesOfValue(boolLiteral.value, [bool])
+        checkExpectedTypesOfValue(boolLiteral.value, [bool])
         return SecurityType(bool, boolLiteral.securityLabel)
 
     def visitIntLiteral(self, intLiteral):
-        _checkExpectedTypesOfValue(intLiteral.value, [int])
+        checkExpectedTypesOfValue(intLiteral.value, [int])
         return SecurityType(int, intLiteral.securityLabel)
 
     def visitFloatLiteral(self, floatLiteral):
-        _checkExpectedTypesOfValue(floatLiteral.value, [int, float])
+        checkExpectedTypesOfValue(floatLiteral.value, [int, float])
         return SecurityType(float, floatLiteral.securityLabel)
 
     def visitStringLiteral(self, stringLiteral):
-        _checkExpectedTypesOfValue(stringLiteral.value, [str])
+        checkExpectedTypesOfValue(stringLiteral.value, [str])
         return SecurityType(str, stringLiteral.securityLabel)
 
     def visitUnaryExpression(self, unaryExpression):

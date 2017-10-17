@@ -14,7 +14,7 @@ def _isConsistentTypeOfValue(value, type):
     if isinstance(type, FunctionType):
         if not isinstance(value, FunctionExpression):
             return False
-        return _areConsistentTypes(value.functionType, type)
+        return _areConsistentTypes(value.securityType.type, type)
     if isinstance(type, SecurityType):
         return False
     return isinstance(value, type)

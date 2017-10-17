@@ -19,3 +19,4 @@
 (function l (function l (int l) [(int l)]) [] (function l (int l) [((int l) x)] (+ (x) (int l 1))))
 (function h (int ?) [((int ?) x) ((int ?) y)] (+ (x) (y)))
 (function h (int h) [((int ?) x) ((int ?) y)] (+ (x) (y)))
+(function l (function l (int l) [(int l)]) [] (function l (int l) [((int l) x)] (+ (x) (int l 1))))

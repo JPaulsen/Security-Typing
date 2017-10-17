@@ -28,7 +28,7 @@ def _areConsistentTypes(type1, type2):
     if isinstance(type1, FunctionType) and isinstance(type2, FunctionType):
         return _areConsistenFunctionTypes(type1, type2)
     if isinstance(type1, RefType) and isinstance(type2, RefType):
-        return _areConsistentTypes(type1.referencedType, type2.referencedType)
+        return _areConsistentTypes(type1.referencedSecurityType, type2.referencedSecurityType)
     if isinstance(type1, SecurityType) and isinstance(type2, SecurityType):
         return type1.securityLabel <= type2.securityLabel and _areConsistentTypes(type1.type, type2.type)
     if isinstance(type1, FunctionType) or isinstance(type2, FunctionType) or isinstance(type1, RefType) or isinstance(

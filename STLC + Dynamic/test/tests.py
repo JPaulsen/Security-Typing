@@ -319,4 +319,14 @@ tests = [
         "code": "(function (function (bool) [(int)]) [] (function (int) [((int) x)] (+ (x) (int 1))))",
         "expectedValue": "Type Error",
     },
+    {
+        "command": "typeCheck",
+        "code": "(apply (function (bool) [((function (bool) []) f)] (apply (f) [])) [(function (dynamic) [] (int 1))])",
+        "expectedValue": "<type 'bool'>",
+    },
+    {
+        "command": "interp",
+        "code": "(apply (function (bool) [((function (bool) []) f)] (apply (f) [])) [(function (dynamic) [] (int 1))])",
+        "expectedValue": "Runtime Error",
+    },
 ]

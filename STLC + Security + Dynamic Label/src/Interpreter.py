@@ -77,4 +77,5 @@ class Interpreter:
             self.env.put(functionExpression.parameterSymbols[i].value(), arguments[i])
         ans = functionExpression.bodyExpression.accept(self)
         self.env = oldEnv
+        checkExpectedTypesOfValue(ans, [functionExpression.securityType.type.returnType])
         return ans

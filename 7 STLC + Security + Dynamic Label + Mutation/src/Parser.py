@@ -91,6 +91,15 @@ def parse(expr):
         for argumentExpression in expr[2].value():
             argumentExpressions.append(parse(argumentExpression))
         return ApplyExpression(functionExpression, argumentExpressions)
+    elif command == "ref":
+        checkLengthExpected("ref", expr, 2)
+        return RefExpression(parseSecurityType(expr[1]))
+    elif command == "deref":
+        checkLengthExpected("deref", expr, 2)
+        return DerefExpression(parse(expr[1]))
+    elif command == "assign":
+        checkLengthExpected("assign", expr, 4)
+        return AssignmentExpression(parse(expr[1]), parse(expr[2]), parse(expr[3]))
     else:
         checkLengthExpected("variable use", expr, 1)
         return GetExpression(expr[0])

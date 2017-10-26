@@ -60,6 +60,7 @@ def typeCheck(ast):
 class TypeChecker:
     def __init__(self):
         self.env = Environment()
+        self.pc = SecurityLabel("b")
 
     def visitBoolLiteral(self, boolLiteral):
         checkExpectedTypesOfValue(boolLiteral.value, [bool])
@@ -111,12 +112,15 @@ class TypeChecker:
         ifExpression.conditionExpression = conditionExpressionTypeCheckerResult.astNode
         conditionExpressionType = conditionExpressionTypeCheckerResult.type
         _checkExpectedTypes(conditionExpressionType.type, [bool])
+        oldPc = self.pc
+        self.pc = SecurityLabel.join(self.pc, conditionExpressionType.securityLabel)
         thenExpressionTypeCheckerResult = ifExpression.thenExpression.accept(self)
         ifExpression.thenExpression = thenExpressionTypeCheckerResult.astNode
         thenExpressionType = thenExpressionTypeCheckerResult.type
         elseExpressionTypeCheckerResult = ifExpression.elseExpression.accept(self)
         ifExpression.elseExpression = elseExpressionTypeCheckerResult.astNode
         elseExpressionType = elseExpressionTypeCheckerResult.type
+        self.pc = oldPc
         _checkExpectedTypes(elseExpressionType.type, [thenExpressionType.type])
         return TypeCheckerResult(SecurityType(thenExpressionType.type, SecurityLabel.joinMultiple(
             [conditionExpressionType.securityLabel, thenExpressionType.securityLabel,
@@ -148,9 +152,12 @@ class TypeChecker:
             if not isinstance(symbol, Symbol):
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), securityType.type.parameterTypes[i])
+        oldPc = self.pc
+        self.pc = securityType.securityLabel
         bodyExpressionTypeCheckerResult = functionExpression.bodyExpression.accept(self)
         functionExpression.bodyExpression = bodyExpressionTypeCheckerResult.astNode
         bodyExpressionType = bodyExpressionTypeCheckerResult.type
+        self.pc = oldPc
         _checkExpectedTypes(bodyExpressionType, [securityType.type.returnType])
         if not securityType.type.returnType.securityLabel.isDynamicLabel() and bodyExpressionType.securityLabel.isDynamicLabel():
             functionExpression.bodyExpression = CheckDynamicTypeExpression([securityType.type.returnType],
@@ -175,8 +182,36 @@ class TypeChecker:
             parameterType = securityType.type.parameterTypes[i]
             argumentType = argumentTypes[i]
             _checkExpectedTypes(argumentType, [parameterType])
+        if (securityType.securityLabel < self.pc):
+            raise ValueError(
+                "Application of a " + str(securityType.securityLabel) + " function in a " + str(self.pc) + " context.")
         return TypeCheckerResult(securityType.type.returnType,
                                  CheckDynamicTypeExpression([securityType.type.returnType], applyExpression))
+
+    def visitRefExpression(self, refExpression):
+        return TypeCheckerResult(RefType(refExpression.referencedSecurityType), refExpression)
+
+    def visitDerefExpression(self, derefExpression):
+        refExpressionTypeCheckerResult = derefExpression.refExpression.accept(self)
+        derefExpression.refExpression = refExpressionTypeCheckerResult.astNode
+        refExpressionType = refExpressionTypeCheckerResult.type
+        checkExpectedTypesOfValue(refExpressionType, [RefType])
+        return TypeCheckerResult(refExpressionType.referencedSecurityType, derefExpression)
+
+    def visitAssignmentExpression(self, assignmentExpression):
+        refExpressionTypeCheckerResult = assignmentExpression.refExpression.accept(self)
+        assignmentExpression.refExpression = refExpressionTypeCheckerResult.astNode
+        refExpressionType = refExpressionTypeCheckerResult.type
+        checkExpectedTypesOfValue(refExpressionType, [RefType])
+        valueExpressionTypeCheckerResult = assignmentExpression.valueExpression.accept(self)
+        assignmentExpression.valueExpression = valueExpressionTypeCheckerResult.astNode
+        valueExpressionType = valueExpressionTypeCheckerResult.type
+        _checkExpectedTypes(valueExpressionType, [refExpressionType.referencedSecurityType])
+        if (refExpressionType.securityLabel < self.pc):
+            raise ValueError(str(refExpressionType.securityLabel) + " assignation in a " + str(self.pc) + " context.")
+        bodyExpressionTypeCheckerResult = assignmentExpression.bodyExpression.accept(self)
+        assignmentExpression.bodyExpression = bodyExpressionTypeCheckerResult.astNode
+        return bodyExpressionTypeCheckerResult.type
 
 
 class TypeCheckerResult:

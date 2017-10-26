@@ -134,6 +134,43 @@ class ApplyExpression:
     def __str__(self):
         return "(apply " + str(self.functionExpression) + " " + ", ".join(map(str, self.argumentExpressions)) + ")"
 
+
+class RefExpression:
+    def __init__(self, referencedSecurityType):
+        self.referencedSecurityType = referencedSecurityType
+
+    def accept(self, visitor):
+        return visitor.visitRefExpression(self)
+
+    def __str__(self):
+        return "(ref " + str(self.referencedSecurityType) + ")"
+
+
+class DerefExpression:
+    def __init__(self, refExpression):
+        self.refExpression = refExpression
+
+    def accept(self, visitor):
+        return visitor.visitDerefExpression(self)
+
+    def __str__(self):
+        return "(deref " + str(self.refExpression) + ")"
+
+
+class AssignmentExpression:
+    def __init__(self, refExpression, valueExpression, bodyExpression):
+        self.refExpression = refExpression
+        self.valueExpression = valueExpression
+        self.bodyExpression = bodyExpression
+
+    def accept(self, visitor):
+        return visitor.visitAssignmentExpression(self)
+
+    def __str__(self):
+        return "(assign " + str(self.refExpression) + ", " + str(self.valueExpression) + ", " + str(
+            self.bodyExpression) + ")"
+
+
 class CheckDynamicTypeExpression:
     def __init__(self, types, expression):
         self.types = types

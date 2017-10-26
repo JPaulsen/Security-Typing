@@ -329,4 +329,9 @@ tests = [
         "code": "(apply (function (bool) [((function (bool) []) f)] (apply (f) [])) [(function (dynamic) [] (int 1))])",
         "expectedValue": "Runtime Error",
     },
+    {
+        "command": "interp",
+        "code": "(apply (function (dynamic) [((function (bool) []) f)] (apply (f) [])) [(function (dynamic) [] (int 1))])",
+        "expectedValue": "Runtime Error",
+    },
 ]

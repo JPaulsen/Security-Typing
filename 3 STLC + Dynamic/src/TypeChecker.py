@@ -59,89 +59,111 @@ class TypeChecker:
 
     def visitBoolLiteral(self, boolLiteral):
         checkExpectedTypesOfValue(boolLiteral.value, [bool])
-        return bool
+        return TypeCheckerResult(bool, boolLiteral)
 
     def visitIntLiteral(self, intLiteral):
         checkExpectedTypesOfValue(intLiteral.value, [int])
-        return int
+        return TypeCheckerResult(int, intLiteral)
 
     def visitFloatLiteral(self, floatLiteral):
         checkExpectedTypesOfValue(floatLiteral.value, [int, float])
-        return float
+        return TypeCheckerResult(float, floatLiteral)
 
     def visitStringLiteral(self, stringLiteral):
         checkExpectedTypesOfValue(stringLiteral.value, [str])
-        return str
+        return TypeCheckerResult(str, stringLiteral)
 
     def visitDynamicLiteral(self, dynamicLiteral):
         checkExpectedTypesOfValue(dynamicLiteral.value, [bool, int, float, str])
-        return DynamicType()
+        return TypeCheckerResult(DynamicType(), dynamicLiteral)
 
     def visitUnaryExpression(self, unaryExpression):
         if unaryExpression.command == "not":
-            expressionType = unaryExpression.expression.accept(self)
+            expressionTypeCheckerResult = unaryExpression.expression.accept(self)
+            unaryExpression.expression = expressionTypeCheckerResult.astNode
+            expressionType = expressionTypeCheckerResult.type
             if isinstance(expressionType, DynamicType):
                 unaryExpression.expression = CheckDynamicTypeExpression([bool], unaryExpression.expression)
             else:
                 _checkExpectedTypes(expressionType, [bool])
-            return bool
+            return TypeCheckerResult(bool, unaryExpression)
         raise ValueError(
             "UnaryExpression with command " + unaryExpression.command + " not yet implemented at typeChecker level.")
 
     def visitBinaryExpression(self, binaryExpression):
         if binaryExpression.command == "and" or binaryExpression.command == "or":
-            firstExpressionType = binaryExpression.firstExpression.accept(self)
+            firstExpressionTypeCheckerResult = binaryExpression.firstExpression.accept(self)
+            binaryExpression.firstExpression = firstExpressionTypeCheckerResult.astNode
+            firstExpressionType = firstExpressionTypeCheckerResult.type
             if isinstance(firstExpressionType, DynamicType):
                 binaryExpression.firstExpression = CheckDynamicTypeExpression([bool], binaryExpression.firstExpression)
             else:
                 _checkExpectedTypes(firstExpressionType, [bool])
-            secondExpressionType = binaryExpression.secondExpression.accept(self)
+            secondExpressionTypeCheckerResult = binaryExpression.secondExpression.accept(self)
+            binaryExpression.secondExpression = secondExpressionTypeCheckerResult.astNode
+            secondExpressionType = secondExpressionTypeCheckerResult.type
             if isinstance(secondExpressionType, DynamicType):
                 binaryExpression.secondExpression = CheckDynamicTypeExpression([bool],
                                                                                binaryExpression.secondExpression)
             else:
                 _checkExpectedTypes(secondExpressionType, [bool])
-            return bool
+            return TypeCheckerResult(bool, binaryExpression)
         elif binaryExpression.command == "+" or binaryExpression.command == "-" or binaryExpression.command == "*" or binaryExpression.command == "/":
-            firstExpressionType = binaryExpression.firstExpression.accept(self)
+            firstExpressionTypeCheckerResult = binaryExpression.firstExpression.accept(self)
+            binaryExpression.firstExpression = firstExpressionTypeCheckerResult.astNode
+            firstExpressionType = firstExpressionTypeCheckerResult.type
             if isinstance(firstExpressionType, DynamicType):
                 binaryExpression.firstExpression = CheckDynamicTypeExpression([int, float],
                                                                               binaryExpression.firstExpression)
             else:
                 _checkExpectedTypes(firstExpressionType, [int, float])
-            secondExpressionType = binaryExpression.secondExpression.accept(self)
+            secondExpressionTypeCheckerResult = binaryExpression.secondExpression.accept(self)
+            binaryExpression.secondExpression = secondExpressionTypeCheckerResult.astNode
+            secondExpressionType = secondExpressionTypeCheckerResult.type
             if isinstance(secondExpressionType, DynamicType):
                 binaryExpression.secondExpression = CheckDynamicTypeExpression([int, float],
                                                                                binaryExpression.secondExpression)
             else:
                 _checkExpectedTypes(secondExpressionType, [int, float])
 
-            return int if firstExpressionType == int and secondExpressionType == int else float
+            type = int if firstExpressionType == int and secondExpressionType == int else float
+            return TypeCheckerResult(type, binaryExpression)
         raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implemented.")
 
     def visitIfExpression(self, ifExpression):
-        conditionExpressionType = ifExpression.conditionExpression.accept(self)
+        conditionExpressionTypeCheckerResult = ifExpression.conditionExpression.accept(self)
+        ifExpression.conditionExpression = conditionExpressionTypeCheckerResult.astNode
+        conditionExpressionType = conditionExpressionTypeCheckerResult.type
         if isinstance(conditionExpressionType, DynamicType):
             ifExpression.conditionExpression = CheckDynamicTypeExpression([bool], ifExpression.conditionExpression)
         else:
             _checkExpectedTypes(conditionExpressionType, [bool])
-        thenExpressionType = ifExpression.thenExpression.accept(self)
-        elseExpressionType = ifExpression.elseExpression.accept(self)
+        thenExpressionTypeCheckerResult = ifExpression.thenExpression.accept(self)
+        ifExpression.thenExpression = thenExpressionTypeCheckerResult.astNode
+        thenExpressionType = thenExpressionTypeCheckerResult.type
+        elseExpressionTypeCheckerResult = ifExpression.elseExpression.accept(self)
+        ifExpression.elseExpression = elseExpressionTypeCheckerResult.astNode
+        elseExpressionType = elseExpressionTypeCheckerResult.type
         if isinstance(thenExpressionType, DynamicType) or isinstance(elseExpressionType, DynamicType):
-            return DynamicType()
+            return TypeCheckerResult(DynamicType(), ifExpression)
         _checkExpectedTypes(thenExpressionType, [elseExpressionType])
-        return thenExpressionType
+        return TypeCheckerResult(thenExpressionType, ifExpression)
 
     def visitLetExpression(self, letExpression):
         oldEnv = self.env
         self.env = self.env.clone()
-        self.env.put(letExpression.symbol.value(), letExpression.valueExpression.accept(self))
-        ans = letExpression.thenExpression.accept(self)
+        valueExpressionTypeCheckerResult = letExpression.valueExpression.accept(self)
+        letExpression.valueExpression = valueExpressionTypeCheckerResult.astNode
+        valueExpressionType = valueExpressionTypeCheckerResult.type
+        self.env.put(letExpression.symbol.value(), valueExpressionType)
+        thenExpressionTypeCheckerResult = letExpression.thenExpression.accept(self)
+        letExpression.thenExpression = thenExpressionTypeCheckerResult.astNode
+        thenExpressionType = thenExpressionTypeCheckerResult.type
         self.env = oldEnv
-        return ans
+        return TypeCheckerResult(thenExpressionType, letExpression)
 
     def visitGetExpression(self, getExpression):
-        return self.env.get(getExpression.symbol.value())
+        return TypeCheckerResult(self.env.get(getExpression.symbol.value()), getExpression)
 
     def visitFunctionExpression(self, functionExpression):
         functionType = functionExpression.functionType
@@ -153,19 +175,26 @@ class TypeChecker:
             if not isinstance(symbol, Symbol):
                 raise ValueError('Each function parameter must be a symbol.')
             self.env.put(functionExpression.parameterSymbols[i].value(), functionType.parameterTypes[i])
-        bodyExpressionType = functionExpression.bodyExpression.accept(self)
+        bodyExpressionTypeCheckerResult = functionExpression.bodyExpression.accept(self)
+        functionExpression.bodyExpression = bodyExpressionTypeCheckerResult.astNode
+        bodyExpressionType = bodyExpressionTypeCheckerResult.type
         _checkExpectedTypes(bodyExpressionType, [functionType.returnType])
         if not isinstance(functionType.returnType, DynamicType) and isinstance(bodyExpressionType, DynamicType):
             functionExpression.bodyExpression = CheckDynamicTypeExpression([functionType.returnType],
                                                                            functionExpression.bodyExpression)
         self.env = oldEnv
-        return functionType
+        return TypeCheckerResult(functionType, functionExpression)
 
     def visitApplyExpression(self, applyExpression):
-        functionType = applyExpression.functionExpression.accept(self)
+        functionExpressionTypeCheckerResult = applyExpression.functionExpression.accept(self)
+        applyExpression.functionExpression = functionExpressionTypeCheckerResult.astNode
+        functionType = functionExpressionTypeCheckerResult.type
         argumentTypes = []
-        for argument in applyExpression.argumentExpressions:
-            argumentTypes.append(argument.accept(self))
+        for i in range(len(applyExpression.argumentExpressions)):
+            argumentTypeCheckerResult = applyExpression.argumentExpressions[i].accept(self)
+            applyExpression.argumentExpressions[i] = argumentTypeCheckerResult.astNode
+            argumentType = argumentTypeCheckerResult.type
+            argumentTypes.append(argumentType)
         argumentsLength = len(argumentTypes)
         if len(functionType.parameterTypes) != argumentsLength:
             raise ValueError('Function length of parameters and arguments in apply do not match.')
@@ -173,7 +202,13 @@ class TypeChecker:
             parameterType = functionType.parameterTypes[i]
             argumentType = argumentTypes[i]
             _checkExpectedTypes(argumentType, [parameterType])
-        return functionType.returnType
+        if (isinstance(functionType.returnType, DynamicType)):
+            return TypeCheckerResult(functionType.returnType, applyExpression)
+        return TypeCheckerResult(functionType.returnType,
+                                 CheckDynamicTypeExpression([functionType.returnType], applyExpression))
 
-    def visitCheckDynamicTypeExpression(self, checkDynamicTypeExpression):
-        return DynamicType()
+
+class TypeCheckerResult:
+    def __init__(self, type, astNode):
+        self.type = type
+        self.astNode = astNode

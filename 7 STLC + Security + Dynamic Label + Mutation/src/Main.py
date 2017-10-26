@@ -13,7 +13,10 @@ for code in codeSource:
     print "Program:", program
     ast = parse(program)
     print "AST before typeCheck:", ast
-    print "Type:", typeCheck(ast)
+    typeCheckerResult = typeCheck(ast)
+    type = typeCheckerResult.type
+    print "Type:", type
+    ast = typeCheckerResult.astNode
     print "AST after typeCheck:", ast
     print "Result:", interp(ast)
     print "+--------------------+"

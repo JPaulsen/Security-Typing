@@ -119,12 +119,3 @@ class SecurityValue:
 
     def boolNot(self):
         return SecurityValue(not self.value, self.securityLabel)
-
-
-class RefType(SecurityType):
-    def __init__(self, referencedSecurityType):
-        SecurityType.__init__(self, referencedSecurityType.type, referencedSecurityType.securityLabel)
-        self.referencedSecurityType = referencedSecurityType
-
-    def __str__(self):
-        return '<ref ' + str(self.referencedSecurityType) + '>'

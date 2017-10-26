@@ -17,7 +17,7 @@ def safeTypeCheck(code):
     except:
         return "Parsing Error"
     try:
-        return typeCheck(ast)
+        return typeCheck(ast).type
     except:
         return "Type Error"
 
@@ -32,7 +32,8 @@ def safeInterp(code):
     except:
         return "Parsing Error"
     try:
-        typeCheck(ast)
+        typeCheckerResult = typeCheck(ast)
+        ast = typeCheckerResult.astNode
     except:
         return "Type Error"
     try:

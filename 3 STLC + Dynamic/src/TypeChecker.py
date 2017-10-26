@@ -91,17 +91,17 @@ class TypeChecker:
             "UnaryExpression with command " + unaryExpression.command + " not yet implemented at typeChecker level.")
 
     def visitBinaryExpression(self, binaryExpression):
+        firstExpressionTypeCheckerResult = binaryExpression.firstExpression.accept(self)
+        binaryExpression.firstExpression = firstExpressionTypeCheckerResult.astNode
+        firstExpressionType = firstExpressionTypeCheckerResult.type
+        secondExpressionTypeCheckerResult = binaryExpression.secondExpression.accept(self)
+        binaryExpression.secondExpression = secondExpressionTypeCheckerResult.astNode
+        secondExpressionType = secondExpressionTypeCheckerResult.type
         if binaryExpression.command == "and" or binaryExpression.command == "or":
-            firstExpressionTypeCheckerResult = binaryExpression.firstExpression.accept(self)
-            binaryExpression.firstExpression = firstExpressionTypeCheckerResult.astNode
-            firstExpressionType = firstExpressionTypeCheckerResult.type
             if isinstance(firstExpressionType, DynamicType):
                 binaryExpression.firstExpression = CheckDynamicTypeExpression([bool], binaryExpression.firstExpression)
             else:
                 _checkExpectedTypes(firstExpressionType, [bool])
-            secondExpressionTypeCheckerResult = binaryExpression.secondExpression.accept(self)
-            binaryExpression.secondExpression = secondExpressionTypeCheckerResult.astNode
-            secondExpressionType = secondExpressionTypeCheckerResult.type
             if isinstance(secondExpressionType, DynamicType):
                 binaryExpression.secondExpression = CheckDynamicTypeExpression([bool],
                                                                                binaryExpression.secondExpression)
@@ -109,17 +109,11 @@ class TypeChecker:
                 _checkExpectedTypes(secondExpressionType, [bool])
             return TypeCheckerResult(bool, binaryExpression)
         elif binaryExpression.command == "+" or binaryExpression.command == "-" or binaryExpression.command == "*" or binaryExpression.command == "/":
-            firstExpressionTypeCheckerResult = binaryExpression.firstExpression.accept(self)
-            binaryExpression.firstExpression = firstExpressionTypeCheckerResult.astNode
-            firstExpressionType = firstExpressionTypeCheckerResult.type
             if isinstance(firstExpressionType, DynamicType):
                 binaryExpression.firstExpression = CheckDynamicTypeExpression([int, float],
                                                                               binaryExpression.firstExpression)
             else:
                 _checkExpectedTypes(firstExpressionType, [int, float])
-            secondExpressionTypeCheckerResult = binaryExpression.secondExpression.accept(self)
-            binaryExpression.secondExpression = secondExpressionTypeCheckerResult.astNode
-            secondExpressionType = secondExpressionTypeCheckerResult.type
             if isinstance(secondExpressionType, DynamicType):
                 binaryExpression.secondExpression = CheckDynamicTypeExpression([int, float],
                                                                                binaryExpression.secondExpression)

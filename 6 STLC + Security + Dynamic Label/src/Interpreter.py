@@ -79,3 +79,8 @@ class Interpreter:
         self.env = oldEnv
         checkExpectedTypesOfValue(ans, [functionExpression.securityType.type.returnType])
         return ans
+
+    def visitCheckDynamicTypeExpression(self, checkDynamicTypeExpression):
+        value = checkDynamicTypeExpression.expression.accept(self)
+        checkExpectedTypesOfValue(value, checkDynamicTypeExpression.types)
+        return value

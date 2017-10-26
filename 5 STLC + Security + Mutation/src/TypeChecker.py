@@ -168,7 +168,7 @@ class TypeChecker:
     def visitDerefExpression(self, derefExpression):
         refExpressionType = derefExpression.refExpression.accept(self)
         _checkExpectedTypesOfValue(refExpressionType, [RefType])
-        return refExpressionType.referencedType
+        return refExpressionType.referencedSecurityType
 
     def visitAssignmentExpression(self, assignmentExpression):
         refExpressionType = assignmentExpression.refExpression.accept(self)

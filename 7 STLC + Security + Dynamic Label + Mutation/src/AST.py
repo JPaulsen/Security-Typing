@@ -200,3 +200,30 @@ class Environment:
         newEnv = Environment()
         newEnv.dictionary = self.dictionary.copy()
         return newEnv
+
+
+class Store:
+    def __init__(self):
+        self.dictionary = {}
+        self.size = 0
+
+    def put(self, key, value):
+        if key >= self.size:
+            raise ValueError('Memory slot not available.')
+        if not isinstance(key, int):
+            raise ValueError('Store keys must be an integer.')
+        self.dictionary[key] = value
+
+    def get(self, key):
+        if key >= self.size:
+            raise ValueError('Memory slot not available.')
+        if not isinstance(key, int):
+            raise ValueError('Store keys must be an integer.')
+        try:
+            return self.dictionary[key]
+        except:
+            raise ValueError('NullPointerException.')
+
+    def createRef(self):
+        self.size += 1
+        return self.size - 1

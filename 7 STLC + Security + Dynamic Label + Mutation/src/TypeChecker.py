@@ -182,7 +182,7 @@ class TypeChecker:
             parameterType = securityType.type.parameterTypes[i]
             argumentType = argumentTypes[i]
             _checkExpectedTypes(argumentType, [parameterType])
-        if (securityType.securityLabel < self.pc):
+        if not securityType.securityLabel >= self.pc:
             raise ValueError(
                 "Application of a " + str(securityType.securityLabel) + " function in a " + str(self.pc) + " context.")
         return TypeCheckerResult(securityType.type.returnType,
@@ -207,11 +207,11 @@ class TypeChecker:
         assignmentExpression.valueExpression = valueExpressionTypeCheckerResult.astNode
         valueExpressionType = valueExpressionTypeCheckerResult.type
         _checkExpectedTypes(valueExpressionType, [refExpressionType.referencedSecurityType])
-        if (refExpressionType.securityLabel < self.pc):
+        if not refExpressionType.securityLabel >= self.pc:
             raise ValueError(str(refExpressionType.securityLabel) + " assignation in a " + str(self.pc) + " context.")
         bodyExpressionTypeCheckerResult = assignmentExpression.bodyExpression.accept(self)
         assignmentExpression.bodyExpression = bodyExpressionTypeCheckerResult.astNode
-        return bodyExpressionTypeCheckerResult.type
+        return TypeCheckerResult(bodyExpressionTypeCheckerResult.type, assignmentExpression)
 
 
 class TypeCheckerResult:

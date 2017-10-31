@@ -70,6 +70,15 @@ class SecurityLabel:
         return reduce(SecurityLabel.meet, securityLabels, SecurityLabel('t'))
 
 
+class RefType(SecurityType):
+    def __init__(self, referencedSecurityType):
+        SecurityType.__init__(self, referencedSecurityType.type, referencedSecurityType.securityLabel)
+        self.referencedSecurityType = referencedSecurityType
+
+    def __str__(self):
+        return '<ref ' + str(self.referencedSecurityType) + '>'
+
+
 class SecurityValue:
     def __init__(self, value, securityLabel):
         self.value = value

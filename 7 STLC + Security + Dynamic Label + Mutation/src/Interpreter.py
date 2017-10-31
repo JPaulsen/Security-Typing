@@ -10,6 +10,7 @@ def interp(ast):
 class Interpreter:
     def __init__(self):
         self.env = Environment()
+        self.store = Store()
 
     def visitBoolLiteral(self, boolLiteral):
         return SecurityValue(boolLiteral.value, boolLiteral.securityLabel)
@@ -84,3 +85,15 @@ class Interpreter:
         value = checkDynamicTypeExpression.expression.accept(self)
         checkExpectedTypesOfValue(value, checkDynamicTypeExpression.types)
         return value
+
+    def visitRefExpression(self, refExpression):
+        return SecurityValue(self.store.createRef(), refExpression.referencedSecurityType.securityLabel)
+
+    def visitDerefExpression(self, derefExpression):
+        return self.store.get(derefExpression.refExpression.accept(self).value)
+
+    def visitAssignmentExpression(self, assignmentExpression):
+        key = assignmentExpression.refExpression.accept(self)
+        value = assignmentExpression.valueExpression.accept(self)
+        self.store.put(key.value, value)
+        return assignmentExpression.bodyExpression.accept(self)

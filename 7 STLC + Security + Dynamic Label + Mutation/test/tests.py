@@ -69,4 +69,9 @@ tests = [
         "code": "(apply (function l (int ?) [((function l (int l) []) f)] (apply (f) [])) [(function l (int ?) [] (int h 1))])",
         "expectedValue": "Runtime Error",
     },
+    {
+        "command": "typeCheck",
+        "code": "(let x (ref (int l)) (if (bool h True) (assign (x) (int l 0) (x)) (assign (x) (int l 1) (x))))",
+        "expectedValue": "Type Error"
+    },
 ]

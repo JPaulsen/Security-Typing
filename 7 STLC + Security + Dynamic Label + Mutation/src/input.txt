@@ -24,3 +24,4 @@
 (let x (ref (int h)) (assign (x) (int h 0) (x)))
 (function l (function l (int l) [(int l)]) [] (function l (int l) [((int l) x)] (+ (x) (int l 1))))
 (let x (ref (int h)) (assign (x) (int h 5) (deref (x))))
+(apply (function h (int h) [((function ? (int h) []) f)] (apply (f) [])) [(function l (int h) [] (int h 1))])

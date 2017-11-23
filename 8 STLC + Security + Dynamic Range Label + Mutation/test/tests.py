@@ -32,7 +32,7 @@ tests = [
     {
         "command": "typeCheck",
         "code": "(apply (function l (bool ?) [((function ? (bool ?) [(bool ?)]) f)] (apply (f) [(bool h True)])) [(function l (bool l) [((bool l) x)] (bool l True))])",
-        "expectedValue": "(<type 'bool'>, ?)",
+        "expectedValue": "(<type 'bool'>, (b, t))",
     },
     {
         "command": "interp",
@@ -62,7 +62,7 @@ tests = [
     {
         "command": "typeCheck",
         "code": "(apply (function l (int ?) [((function l (int l) []) f)] (apply (f) [])) [(function l (int ?) [] (int h 1))])",
-        "expectedValue": "(<type 'int'>, ?)",
+        "expectedValue": "(<type 'int'>, (b, t))",
     },
     {
         "command": "interp",

@@ -95,7 +95,7 @@ class TypeChecker:
         secondExpressionTypeCheckerResult = binaryExpression.secondExpression.accept(self)
         binaryExpression.secondExpression = secondExpressionTypeCheckerResult.astNode
         secondExpressionType = secondExpressionTypeCheckerResult.type
-        securityLabel = SecurityLabel.join(firstExpressionType.securityLabel, secondExpressionType.securityLabel)
+        securityLabel = SecurityLabel.staticJoin(firstExpressionType.securityLabel, secondExpressionType.securityLabel)
         if binaryExpression.command == "and" or binaryExpression.command == "or":
             _checkExpectedTypes(firstExpressionType.type, [bool])
             _checkExpectedTypes(secondExpressionType.type, [bool])
@@ -113,7 +113,7 @@ class TypeChecker:
         conditionExpressionType = conditionExpressionTypeCheckerResult.type
         _checkExpectedTypes(conditionExpressionType.type, [bool])
         oldPc = self.pc
-        self.pc = SecurityLabel.join(self.pc, conditionExpressionType.securityLabel)
+        self.pc = SecurityLabel.staticJoin(self.pc, conditionExpressionType.securityLabel)
         thenExpressionTypeCheckerResult = ifExpression.thenExpression.accept(self)
         ifExpression.thenExpression = thenExpressionTypeCheckerResult.astNode
         thenExpressionType = thenExpressionTypeCheckerResult.type
@@ -122,7 +122,7 @@ class TypeChecker:
         elseExpressionType = elseExpressionTypeCheckerResult.type
         self.pc = oldPc
         _checkExpectedTypes(elseExpressionType.type, [thenExpressionType.type])
-        return TypeCheckerResult(SecurityType(thenExpressionType.type, SecurityLabel.joinMultiple(
+        return TypeCheckerResult(SecurityType(thenExpressionType.type, SecurityLabel.staticJoinMultiple(
             [conditionExpressionType.securityLabel, thenExpressionType.securityLabel,
              elseExpressionType.securityLabel])), ifExpression)
 

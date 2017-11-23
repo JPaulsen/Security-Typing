@@ -33,7 +33,7 @@ class SecurityLabel:
         return self.isDynamicLabel() or other.isDynamicLabel() or self.value < other.value
 
     def __le__(self, other):
-        return other.isDynamicLabel() or self.value <= other.value
+        return self.isDynamicLabel() or other.isDynamicLabel() or self.value <= other.value
 
     def __str__(self):
         return self.type

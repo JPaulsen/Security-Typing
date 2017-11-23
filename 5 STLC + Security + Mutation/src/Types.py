@@ -43,9 +43,7 @@ class SecurityLabel:
 
     @staticmethod
     def join(securityLabel1, securityLabel2):
-        if (securityLabel1 >= securityLabel2):
-            return securityLabel1
-        return securityLabel2
+        return securityLabel1 if securityLabel1 >= securityLabel2 else securityLabel2
 
     @staticmethod
     def joinMultiple(securityLabels):
@@ -53,9 +51,7 @@ class SecurityLabel:
 
     @staticmethod
     def meet(securityLabel1, securityLabel2):
-        if (securityLabel1 <= securityLabel2):
-            return securityLabel1
-        return securityLabel2
+        return securityLabel1 if securityLabel1 <= securityLabel2 else securityLabel2
 
     @staticmethod
     def meetMultiple(securityLabels):

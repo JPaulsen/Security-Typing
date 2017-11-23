@@ -25,24 +25,31 @@ class SecurityLabel:
         '?': -1,
     }
 
-    def __init__(self, type):
-        self.type = type
-        self.value = SecurityLabel.lattice[type]
+    def __init__(self, lowerBoundType, upperBoundType=None):
+        if lowerBoundType == '?':
+            self.__init__('b', 't')
+        elif upperBoundType == None:
+            self.__init__(lowerBoundType, lowerBoundType)
+        else:
+            self.lowerBoundType = lowerBoundType
+            self.lowerBoundValue = SecurityLabel.lattice[lowerBoundType]
+            self.upperBoundType = upperBoundType
+            self.upperBoundValue = SecurityLabel.lattice[upperBoundType]
 
     def __lt__(self, other):
-        return self.isDynamicLabel() or other.isDynamicLabel() or self.value < other.value
+        return self.isDynamicLabel() or other.isDynamicLabel() or self.upperBoundValue < other.lowerBoundValue
 
     def __le__(self, other):
-        return other.isDynamicLabel() or self.value <= other.value
+        return other.isDynamicLabel() or self.upperBoundValue <= other.lowerBoundValue
 
     def __str__(self):
-        return self.type
+        return "(" + self.lowerBoundType + ", " + self.upperBoundType + ")"
 
     def isDynamicLabel(self):
-        return self.value == SecurityLabel.lattice['?']
+        return self.lowerBoundValue != self.upperBoundValue
 
     @staticmethod
-    def join(securityLabel1, securityLabel2):
+    def staticJoin(securityLabel1, securityLabel2):
         if securityLabel1.isDynamicLabel():
             return securityLabel1
         if securityLabel2.isDynamicLabel():
@@ -50,11 +57,23 @@ class SecurityLabel:
         return securityLabel1 if securityLabel1 >= securityLabel2 else securityLabel2
 
     @staticmethod
-    def joinMultiple(securityLabels):
-        return reduce(SecurityLabel.join, securityLabels, SecurityLabel('b'))
+    def staticJoinMultiple(securityLabels):
+        return reduce(SecurityLabel.staticJoin, securityLabels, SecurityLabel('b'))
 
     @staticmethod
-    def meet(securityLabel1, securityLabel2):
+    def dynamicJoin(securityLabel1, securityLabel2):
+        lowerBoundType = securityLabel1.lowerBoundType if securityLabel1.lowerBoundValue >= securityLabel2.lowerBoundValue \
+            else securityLabel2.lowerBoundType
+        upperBoundType = securityLabel1.upperBoundType if securityLabel1.upperBoundValue >= securityLabel2.upperBoundValue \
+            else securityLabel2.upperBoundType
+        return SecurityLabel(lowerBoundType, upperBoundType)
+
+    @staticmethod
+    def dynamicJoinMultiple(securityLabels):
+        return reduce(SecurityLabel.dynamicJoin, securityLabels, SecurityLabel('b'))
+
+    @staticmethod
+    def staticMeet(securityLabel1, securityLabel2):
         if securityLabel1.isDynamicLabel():
             return securityLabel1
         if securityLabel2.isDynamicLabel():
@@ -62,8 +81,20 @@ class SecurityLabel:
         return securityLabel1 if securityLabel1 <= securityLabel2 else securityLabel2
 
     @staticmethod
-    def meetMultiple(securityLabels):
-        return reduce(SecurityLabel.meet, securityLabels, SecurityLabel('t'))
+    def staticMeetMultiple(securityLabels):
+        return reduce(SecurityLabel.staticMeet, securityLabels, SecurityLabel('t'))
+
+    @staticmethod
+    def dynamicMeet(securityLabel1, securityLabel2):
+        lowerBoundType = securityLabel1.lowerBoundType if securityLabel1.lowerBoundValue <= securityLabel2.lowerBoundValue \
+            else securityLabel2.lowerBoundType
+        upperBoundType = securityLabel1.upperBoundType if securityLabel1.upperBoundValue <= securityLabel2.upperBoundValue \
+            else securityLabel2.upperBoundType
+        return SecurityLabel(lowerBoundType, upperBoundType)
+
+    @staticmethod
+    def dynamicMeetMultiple(securityLabels):
+        return reduce(SecurityLabel.staticMeet, securityLabels, SecurityLabel('t'))
 
 
 class RefType(SecurityType):

@@ -74,4 +74,14 @@ tests = [
         "code": "(let x (ref (int l)) (if (bool h True) (assign (x) (int l 0) (x)) (assign (x) (int l 1) (x))))",
         "expectedValue": "Type Error"
     },
+    {
+        "command": "interp",
+        "code": "(if (bool h True) (int h 1) (int h 0))",
+        "expectedValue": "(1, h)"
+    },
+    {
+        "command": "interp",
+        "code": "(if (bool h False) (int h 1) (int h 0))",
+        "expectedValue": "(0, h)"
+    },
 ]

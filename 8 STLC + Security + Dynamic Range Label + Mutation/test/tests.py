@@ -74,4 +74,34 @@ tests = [
         "code": "(let x (ref (int l)) (if (bool h True) (assign (x) (int l 0) (x)) (assign (x) (int l 1) (x))))",
         "expectedValue": "Type Error"
     },
+    {
+        "command": "typeCheck",
+        "code": "(function l (int l) [((int h) x) ((int ?) y)] (+ (x) (y)))",
+        "expectedValue": "(function (<type 'int'>, l) [(<type 'int'>, h), (<type 'int'>, (b, t))], l)"
+    },
+    {
+        "command": "interp",
+        "code": "(function l (int l) [((int h) x) ((int ?) y)] (+ (x) (y)))",
+        "expectedValue": "((function (<type 'int'>, l) [(<type 'int'>, h), (<type 'int'>, (b, t))], l) [Symbol('x'), Symbol('y')] (check [(<type 'int'>, l)] (+ (get Symbol('x')) (get Symbol('y')))), l)"
+    },
+    {
+        "command": "typeCheck",
+        "code": "(apply (function l (int l) [((int h) x) ((int ?) y)] (let a (ref (int l)) (assign (a) (+ (x) (y)) (deref (a))))) [(int h 1) (int ? 2)])",
+        "expectedValue": "(<type 'int'>, l)"
+    },
+    {
+        "command": "interp",
+        "code": "(apply (function l (int l) [((int h) x) ((int ?) y)] (let a (ref (int l)) (assign (a) (+ (x) (y)) (deref (a))))) [(int h 1) (int ? 2)])",
+        "expectedValue": "Runtime Error"
+    },
+    {
+        "command": "interp",
+        "code": "(if (bool h True) (int h 1) (int h 0))",
+        "expectedValue": "(1, h)"
+    },
+    {
+        "command": "interp",
+        "code": "(if (bool h False) (int h 1) (int h 0))",
+        "expectedValue": "(0, h)"
+    },
 ]

@@ -47,10 +47,15 @@ class Interpreter:
         raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implemented.")
 
     def visitIfExpression(self, ifExpression):
-        if ifExpression.conditionExpression.accept(self):
-            return ifExpression.thenExpression.accept(self)
+        conditionValue = ifExpression.conditionExpression.accept(self)
+        oldPc = self.pc
+        self.pc = SecurityLabel.dynamicJoin(self.pc, conditionValue.securityLabel)
+        if conditionValue.value:
+            returnValue = ifExpression.thenExpression.accept(self)
         else:
-            return ifExpression.elseExpression.accept(self)
+            returnValue = ifExpression.elseExpression.accept(self)
+        self.pc = oldPc
+        return returnValue
 
     def visitLetExpression(self, letExpression):
         oldEnv = self.env
@@ -77,7 +82,10 @@ class Interpreter:
         for i in range(argumentsLength):
             checkExpectedTypesOfValue(arguments[i], [functionExpression.securityType.type.parameterTypes[i]])
             self.env.put(functionExpression.parameterSymbols[i].value(), arguments[i])
+        oldPc = self.pc
+        self.pc = SecurityLabel.dynamicJoin(self.pc, functionExpression.securityType.securityLabel)
         ans = functionExpression.bodyExpression.accept(self)
+        self.pc = oldPc
         self.env = oldEnv
         checkExpectedTypesOfValue(ans, [functionExpression.securityType.type.returnType])
         return ans
@@ -96,5 +104,6 @@ class Interpreter:
     def visitAssignmentExpression(self, assignmentExpression):
         key = assignmentExpression.refExpression.accept(self)
         value = assignmentExpression.valueExpression.accept(self)
+        SecurityLabel.checkDynamicAssignmentExpression(key.securityLabel, value.securityLabel, self.pc)
         self.store.put(key.value, value)
         return assignmentExpression.bodyExpression.accept(self)

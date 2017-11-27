@@ -49,4 +49,14 @@ tests = [
         "code": "(function l (function l (bool l) [(int l)]) [] (function l (int l) [((int l) x)] (+ (x) (int l 1))))",
         "expectedValue": "Type Error"
     },
+    {
+        "command": "interp",
+        "code": "(if (bool h True) (int h 1) (int h 0))",
+        "expectedValue": "1"
+    },
+    {
+        "command": "interp",
+        "code": "(if (bool h False) (int h 1) (int h 0))",
+        "expectedValue": "0"
+    },
 ]

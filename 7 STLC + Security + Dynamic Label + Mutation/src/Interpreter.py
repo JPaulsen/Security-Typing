@@ -46,7 +46,7 @@ class Interpreter:
         raise ValueError("BinaryExpression with command " + binaryExpression.command + " not yet implemented.")
 
     def visitIfExpression(self, ifExpression):
-        if ifExpression.conditionExpression.accept(self):
+        if ifExpression.conditionExpression.accept(self).value:
             return ifExpression.thenExpression.accept(self)
         else:
             return ifExpression.elseExpression.accept(self)

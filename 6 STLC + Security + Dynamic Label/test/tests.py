@@ -69,4 +69,14 @@ tests = [
         "code": "(apply (function l (int ?) [((function l (int l) []) f)] (apply (f) [])) [(function l (int ?) [] (int h 1))])",
         "expectedValue": "Runtime Error",
     },
+    {
+        "command": "interp",
+        "code": "(if (bool h True) (int h 1) (int h 0))",
+        "expectedValue": "(1, h)"
+    },
+    {
+        "command": "interp",
+        "code": "(if (bool h False) (int h 1) (int h 0))",
+        "expectedValue": "(0, h)"
+    },
 ]

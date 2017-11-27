@@ -11,6 +11,7 @@
 (* (int h 10) (int h 5))
 (/ (int h 10) (int h 5))
 (if (bool h True) (int h 1) (int h 0))
+(if (bool h False) (int h 1) (int h 0))
 (let x (int h 1) (x))
 (function h (int h) [((int h) x) ((int h) y)] (+ (x) (y)))
 (apply (function h (int h) [((int h) x) ((int h) y)] (+ (x) (y))) [(int h 1) (int h 2)])
@@ -25,3 +26,5 @@
 (function l (function l (int l) [(int l)]) [] (function l (int l) [((int l) x)] (+ (x) (int l 1))))
 (let x (ref (int h)) (assign (x) (int h 5) (deref (x))))
 (apply (function h (int h) [((function ? (int h) []) f)] (apply (f) [])) [(function l (int h) [] (int h 1))])
+(function l (int l) [((int h) x) ((int ?) y)] (let a (ref (int l)) (assign (a) (+ (x) (y)) (deref (a)))))
+(int ? 0)

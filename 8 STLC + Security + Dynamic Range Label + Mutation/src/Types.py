@@ -48,6 +48,14 @@ class SecurityLabel:
     def isDynamicLabel(self):
         return self.lowerBoundValue != self.upperBoundValue
 
+    def checkIsGreaterOrEqualThan(self, securityLabel):
+        if securityLabel.upperBoundValue > self.upperBoundValue:
+            raise ValueError(str(self) + " value can't always be higher or equal than " + str(securityLabel) + " value.")
+        if self.lowerBoundValue < securityLabel.upperBoundValue:
+            self.lowerBoundType = securityLabel.upperBoundType
+            self.lowerBoundValue = securityLabel.upperBoundValue
+
+
     @staticmethod
     def staticJoin(securityLabel1, securityLabel2):
         if securityLabel1.isDynamicLabel():
@@ -96,6 +104,11 @@ class SecurityLabel:
     def dynamicMeetMultiple(securityLabels):
         return reduce(SecurityLabel.staticMeet, securityLabels, SecurityLabel('t'))
 
+    @staticmethod
+    def checkDynamicAssignmentExpression(keySecurityLabel, valueSecurityLabel, pc):
+        keySecurityLabel.checkIsGreaterOrEqualThan(valueSecurityLabel)
+        keySecurityLabel.checkIsGreaterOrEqualThan(pc)
+
 
 class RefType(SecurityType):
     def __init__(self, referencedSecurityType):
@@ -115,43 +128,43 @@ class SecurityValue:
         return '(' + str(self.value) + ', ' + str(self.securityLabel) + ')'
 
     def __add__(self, other):
-        return SecurityValue(self.value + other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value + other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __mul__(self, other):
-        return SecurityValue(self.value * other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value * other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __sub__(self, other):
-        return SecurityValue(self.value - other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value - other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __mod__(self, other):
-        return SecurityValue(self.value % other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value % other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __div__(self, other):
-        return SecurityValue(self.value / other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value / other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __lt__(self, other):
-        return SecurityValue(self.value < other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value < other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __le__(self, other):
-        return SecurityValue(self.value <= other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value <= other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __eq__(self, other):
-        return SecurityValue(self.value == other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value == other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __ne__(self, other):
-        return SecurityValue(not self == other, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(not self == other, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __gt__(self, other):
-        return SecurityValue(self.value > other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value > other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def __ge__(self, other):
-        return SecurityValue(self.value >= other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value >= other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def boolAnd(self, other):
-        return SecurityValue(self.value and other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value and other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def boolOr(self, other):
-        return SecurityValue(self.value or other.value, SecurityLabel.staticJoin(self.securityLabel, other.securityLabel))
+        return SecurityValue(self.value or other.value, SecurityLabel.dynamicJoin(self.securityLabel, other.securityLabel))
 
     def boolNot(self):
         return SecurityValue(not self.value, self.securityLabel)

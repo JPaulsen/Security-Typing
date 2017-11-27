@@ -21,29 +21,21 @@ def parse(expr):
     if command == 'bool':
         _checkLengthExpected("Boolean literal", expr, 3)
         securityLabel = SecurityLabel(expr[1].value())
-        if (securityLabel.isDynamicLabel()):
-            raise ValueError('Literals can not have dynamic labels.')
         value = expr[2]
         return BoolLiteral(securityLabel, value)
     elif command == 'int':
         _checkLengthExpected("Integer literal", expr, 3)
         securityLabel = SecurityLabel(expr[1].value())
-        if (securityLabel.isDynamicLabel()):
-            raise ValueError('Literals can not have dynamic labels.')
         value = expr[2]
         return IntLiteral(securityLabel, value)
     elif command == 'float':
         _checkLengthExpected("Float literal", expr, 3)
         securityLabel = SecurityLabel(expr[1].value())
-        if (securityLabel.isDynamicLabel()):
-            raise ValueError('Literals can not have dynamic labels.')
         value = expr[2]
         return FloatLiteral(securityLabel, value)
     elif command == 'str':
         _checkLengthExpected("String literal", expr, 3)
         securityLabel = SecurityLabel(expr[1].value())
-        if (securityLabel.isDynamicLabel()):
-            raise ValueError('Literals can not have dynamic labels.')
         value = expr[2]
         return StringLiteral(securityLabel, value)
     elif command == "not":
@@ -72,8 +64,6 @@ def parse(expr):
     elif command == "function":
         _checkLengthExpected("function", expr, 5)
         securityType = parseFunctionSecurityType(expr)
-        if (securityType.securityLabel.isDynamicLabel()):
-            raise ValueError('Literals can not have dynamic labels.')
         parameterSymbols = map(_getSecond, expr[3].value())
         parametersLength = len(parameterSymbols)
         if parametersLength != len(securityType.type.parameterTypes):

@@ -109,5 +109,10 @@ tests = [
         "code": "(apply (function h (int h) [((function ? (int h) []) f)] (apply (f) [])) [(function l (int h) [] (int h 1))])",
         "expectedValue": "Runtime Error"
     },
+    {
+        "command": "interp",
+        "code": "(let x (ref (int ?)) (assign (x) (int h 0) (let y (ref (int l)) (assign (y) (deref (x)) (y)))))",
+        "expectedValue": "Runtime Error"
+    },
 
 ]

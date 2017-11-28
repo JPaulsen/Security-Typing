@@ -105,6 +105,10 @@ class SecurityLabel:
         keySecurityLabel.checkIsGreaterOrEqualThan(valueSecurityLabel)
         keySecurityLabel.checkIsGreaterOrEqualThan(pc)
 
+    @staticmethod
+    def checkDynamicApplyExpression(functionSecurityLabel, pc):
+        functionSecurityLabel.checkIsGreaterOrEqualThan(pc)
+
 
 class RefType(SecurityType):
     def __init__(self, referencedSecurityType):

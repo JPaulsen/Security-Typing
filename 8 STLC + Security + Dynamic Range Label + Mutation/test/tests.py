@@ -104,4 +104,10 @@ tests = [
         "code": "(if (bool h False) (int h 1) (int h 0))",
         "expectedValue": "(0, h)"
     },
+    {
+        "command": "interp",
+        "code": "(apply (function h (int h) [((function ? (int h) []) f)] (apply (f) [])) [(function l (int h) [] (int h 1))])",
+        "expectedValue": "Runtime Error"
+    },
+
 ]

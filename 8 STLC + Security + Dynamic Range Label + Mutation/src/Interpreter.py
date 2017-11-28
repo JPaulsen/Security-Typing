@@ -83,6 +83,7 @@ class Interpreter:
             checkExpectedTypesOfValue(arguments[i], [functionExpression.securityType.type.parameterTypes[i]])
             self.env.put(functionExpression.parameterSymbols[i].value(), arguments[i])
         oldPc = self.pc
+        SecurityLabel.checkDynamicApplyExpression(functionExpression.securityType.securityLabel, self.pc)
         self.pc = SecurityLabel.dynamicJoin(self.pc, functionExpression.securityType.securityLabel)
         ans = functionExpression.bodyExpression.accept(self)
         self.pc = oldPc

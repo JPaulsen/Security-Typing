@@ -8,5 +8,5 @@ Implementation of many typed standard lambda calculus language with experimental
 3.- STLC + Dynamic (Gradual Typing)\
 4.- STLC + Security\
 5.- STLC + Security + Mutation\
-6.- STLC + Security + Dynamic Label (Gradual Security Typing)
+6.- STLC + Security + Dynamic Label (Gradual Security Typing)\
 7.- STLC + Security + Dynamic Range Label + Mutation (Gradual Security Typing with mutation.)

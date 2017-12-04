@@ -55,6 +55,7 @@ class Interpreter:
         else:
             returnValue = ifExpression.elseExpression.accept(self)
         self.pc = oldPc
+        returnValue.securityLabel = SecurityLabel.dynamicJoin(returnValue.securityLabel, conditionValue.securityLabel)
         return returnValue
 
     def visitLetExpression(self, letExpression):
